@@ -1,0 +1,10 @@
+#!/bin/sh
+set -eu
+cd "$(dirname "$0")/.."
+python3 scripts/verify.py
+python3 -m unittest discover -s tests
+if [ "${1:-}" = "--core" ]; then
+    echo "Core checks passed; QML runtime deliberately omitted (--core)."
+else
+    python3 scripts/qml_smoke.py
+fi

@@ -1,0 +1,24 @@
+name: Check
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      qml:
+        description: Run real DMS QML validation on a prepared Linux desktop runner
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: scripts/check --core
+  qml:
+    if: github.event_name == 'workflow_dispatch' && inputs.qml
+    runs-on: [self-hosted, Linux, dms-1.6.2]
+    steps:
+      - uses: actions/checkout@v4
+      - run: scripts/check

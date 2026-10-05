@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-05",
+  "cli_version": "2026.5",
+  "supported_forms": 88,
+  "read_checks": {
+    "exported-settings": true,
+    "version": true,
+    "account.get": true,
+    "account.list-devices": true,
+    "auto-connect.get": true,
+    "beta-program.get": true,
+    "lockdown-mode.get": true,
+    "dns.get": true,
+    "lan.get": true,
+    "relay.get": true,
+    "relay.list": true,
+    "api-access.get": true,
+    "api-access.list": true,
+    "anti-censorship.get": true,
+    "split-tunnel.list": true,
+    "tunnel.get": true,
+    "custom-list.list": true,
+    "relay.override.get": true,
+    "status": true,
+    "status.listen": true
+  },
+  "errors": {},
+  "mutations_executed": false
+}

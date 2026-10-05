@@ -1,0 +1,2395 @@
+[
+  {
+    "id": "connect",
+    "argv": [
+      "connect"
+    ],
+    "section": "connection",
+    "fields": [
+      {
+        "name": "wait",
+        "kind": "bool",
+        "required": false,
+        "flag": "--wait",
+        "many": false,
+        "label": "field.wait"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.connect",
+    "help": "Connect to a VPN relay\n\nUsage: mullvad connect [OPTIONS]\n\nOptions:\n  -w, --wait     Wait until connected before exiting\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "status"
+  },
+  {
+    "id": "disconnect",
+    "argv": [
+      "disconnect"
+    ],
+    "section": "connection",
+    "fields": [
+      {
+        "name": "wait",
+        "kind": "bool",
+        "required": false,
+        "flag": "--wait",
+        "many": false,
+        "label": "field.wait"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.disconnect",
+    "help": "Disconnect from the VPN\n\nUsage: mullvad disconnect [OPTIONS]\n\nOptions:\n  -w, --wait     Wait until disconnected before exiting\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "status"
+  },
+  {
+    "id": "reconnect",
+    "argv": [
+      "reconnect"
+    ],
+    "section": "connection",
+    "fields": [
+      {
+        "name": "wait",
+        "kind": "bool",
+        "required": false,
+        "flag": "--wait",
+        "many": false,
+        "label": "field.wait"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.reconnect",
+    "help": "Reconnect to any matching VPN relay\n\nUsage: mullvad reconnect [OPTIONS]\n\nOptions:\n  -w, --wait     Wait until connected before exiting\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "status"
+  },
+  {
+    "id": "status",
+    "argv": [
+      "status"
+    ],
+    "section": "connection",
+    "fields": [
+      {
+        "name": "verbose",
+        "kind": "bool",
+        "required": false,
+        "flag": "--verbose",
+        "many": false,
+        "label": "field.verbose"
+      },
+      {
+        "name": "debug",
+        "kind": "bool",
+        "required": false,
+        "flag": "--debug",
+        "many": false,
+        "label": "field.debug"
+      }
+    ],
+    "readonly": true,
+    "stream": false,
+    "confirm": false,
+    "label": "op.status",
+    "help": "Return the state of the VPN tunnel\n\nUsage: mullvad status [OPTIONS] [COMMAND]\n\nCommands:\n  listen  Listen for tunnel state changes\n  help    Print this message or the help of the given subcommand(s)\n\nOptions:\n  -v, --verbose  Enable verbose output\n  -d, --debug    Enable debug output\n  -j, --json     Format output as JSON\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "status"
+  },
+  {
+    "id": "version",
+    "argv": [
+      "version"
+    ],
+    "section": "maintenance",
+    "fields": [],
+    "readonly": true,
+    "stream": false,
+    "confirm": false,
+    "label": "op.version",
+    "help": "Show information about the current Mullvad version and available versions\n\nUsage: mullvad version\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "version"
+  },
+  {
+    "id": "factory-reset",
+    "argv": [
+      "factory-reset"
+    ],
+    "section": "maintenance",
+    "fields": [],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.factory-reset",
+    "help": "Reset settings, caches, and logs\n\nUsage: mullvad factory-reset [OPTIONS]\n\nOptions:\n  -y, --assume-yes  \n  -h, --help        Print help\n  -V, --version     Print version\n",
+    "state": "version"
+  },
+  {
+    "id": "reset-settings",
+    "argv": [
+      "reset-settings"
+    ],
+    "section": "maintenance",
+    "fields": [
+      {
+        "name": "preserve",
+        "kind": "multi",
+        "required": false,
+        "flag": "--preserve",
+        "many": true,
+        "choices": [
+          "relay-settings",
+          "anti-censorship",
+          "custom-lists",
+          "api-access",
+          "update-default-location",
+          "allow-lan",
+          "lockdown-mode",
+          "auto-connect",
+          "tunnel-options",
+          "relay-overrides",
+          "show-beta-releases",
+          "recents"
+        ],
+        "label": "field.preserve"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.reset-settings",
+    "help": "Reset settings only, but remain logged in and keep logs and caches\n\nUsage: mullvad reset-settings [OPTIONS]\n\nOptions:\n  -y, --assume-yes                \n  -p, --preserve [<PRESERVE>...]  [possible values: relay-settings, anti-censorship, custom-lists, api-access, update-default-location, allow-lan, lockdown-mode, auto-connect, tunnel-options, relay-overrides, show-beta-releases, recents]\n  -h, --help                      Print help\n  -V, --version                   Print version\n",
+    "state": "version"
+  },
+  {
+    "id": "import-settings",
+    "argv": [
+      "import-settings"
+    ],
+    "section": "maintenance",
+    "fields": [
+      {
+        "name": "file",
+        "kind": "file",
+        "required": true,
+        "many": false,
+        "label": "field.file"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.import-settings",
+    "help": "Apply a JSON patch generated by 'export-settings'\n\nUsage: mullvad import-settings <FILE>\n\nArguments:\n  <FILE>  File to read from. If this is \"-\", read from standard input\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "version"
+  },
+  {
+    "id": "export-settings",
+    "argv": [
+      "export-settings"
+    ],
+    "section": "maintenance",
+    "fields": [
+      {
+        "name": "file",
+        "kind": "file",
+        "required": true,
+        "many": false,
+        "label": "field.file"
+      }
+    ],
+    "readonly": true,
+    "stream": false,
+    "confirm": false,
+    "label": "op.export-settings",
+    "help": "Export a JSON patch based on the current settings\n\nUsage: mullvad export-settings <FILE>\n\nArguments:\n  <FILE>  File to write to. If this is \"-\", write to standard output\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "version"
+  },
+  {
+    "id": "account.create",
+    "argv": [
+      "account",
+      "create"
+    ],
+    "section": "account",
+    "fields": [],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.account.create",
+    "help": "Create and log in on a new account\n\nUsage: mullvad account create\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "account.get"
+  },
+  {
+    "id": "account.login",
+    "argv": [
+      "account",
+      "login"
+    ],
+    "section": "account",
+    "fields": [
+      {
+        "name": "account",
+        "kind": "account",
+        "required": true,
+        "many": false,
+        "secret": true,
+        "label": "field.account"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.account.login",
+    "help": "Log in on an account\n\nUsage: mullvad account login [ACCOUNT]\n\nArguments:\n  [ACCOUNT]  The Mullvad account number to configure the client with\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "account.get"
+  },
+  {
+    "id": "account.logout",
+    "argv": [
+      "account",
+      "logout"
+    ],
+    "section": "account",
+    "fields": [],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.account.logout",
+    "help": "Log out of the current account\n\nUsage: mullvad account logout\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "account.get"
+  },
+  {
+    "id": "account.get",
+    "argv": [
+      "account",
+      "get"
+    ],
+    "section": "account",
+    "fields": [
+      {
+        "name": "verbose",
+        "kind": "bool",
+        "required": false,
+        "flag": "--verbose",
+        "many": false,
+        "label": "field.verbose"
+      }
+    ],
+    "readonly": true,
+    "stream": false,
+    "confirm": false,
+    "label": "op.account.get",
+    "help": "Display information about the current account\n\nUsage: mullvad account get [OPTIONS]\n\nOptions:\n  -v, --verbose  Enable verbose output\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "account.get"
+  },
+  {
+    "id": "account.list-devices",
+    "argv": [
+      "account",
+      "list-devices"
+    ],
+    "section": "account",
+    "fields": [
+      {
+        "name": "account",
+        "kind": "account",
+        "required": false,
+        "flag": "--account",
+        "many": false,
+        "secret": true,
+        "label": "field.account"
+      },
+      {
+        "name": "verbose",
+        "kind": "bool",
+        "required": false,
+        "flag": "--verbose",
+        "many": false,
+        "label": "field.verbose"
+      }
+    ],
+    "readonly": true,
+    "stream": false,
+    "confirm": false,
+    "label": "op.account.list-devices",
+    "help": "List devices associated with an account\n\nUsage: mullvad account list-devices [OPTIONS]\n\nOptions:\n  -a, --account <ACCOUNT>  Mullvad account number (current account if not specified)\n  -v, --verbose            Enable verbose output\n  -h, --help               Print help\n  -V, --version            Print version\n",
+    "state": "account.get"
+  },
+  {
+    "id": "account.revoke-device",
+    "argv": [
+      "account",
+      "revoke-device"
+    ],
+    "section": "account",
+    "fields": [
+      {
+        "name": "device",
+        "kind": "text",
+        "required": true,
+        "many": false,
+        "label": "field.device"
+      },
+      {
+        "name": "account",
+        "kind": "account",
+        "required": false,
+        "flag": "--account",
+        "many": false,
+        "secret": true,
+        "label": "field.account"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.account.revoke-device",
+    "help": "Revoke a device associated with an account\n\nUsage: mullvad account revoke-device [OPTIONS] <DEVICE>\n\nArguments:\n  <DEVICE>  Name or UID of the device to revoke\n\nOptions:\n  -a, --account <ACCOUNT>  Mullvad account number (current account if not specified)\n  -h, --help               Print help\n  -V, --version            Print version\n",
+    "state": "account.get"
+  },
+  {
+    "id": "account.redeem",
+    "argv": [
+      "account",
+      "redeem"
+    ],
+    "section": "account",
+    "fields": [
+      {
+        "name": "voucher",
+        "kind": "text",
+        "required": true,
+        "many": false,
+        "secret": true,
+        "label": "field.voucher"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.account.redeem",
+    "help": "Redeem a voucher\n\nUsage: mullvad account redeem <VOUCHER>\n\nArguments:\n  <VOUCHER>  Voucher code to submit\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "account.get"
+  },
+  {
+    "id": "auto-connect.get",
+    "argv": [
+      "auto-connect",
+      "get"
+    ],
+    "section": "connection",
+    "fields": [],
+    "readonly": true,
+    "stream": false,
+    "confirm": false,
+    "label": "op.auto-connect.get",
+    "help": "Display the current auto-connect setting\n\nUsage: mullvad auto-connect get\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "status"
+  },
+  {
+    "id": "auto-connect.set",
+    "argv": [
+      "auto-connect",
+      "set"
+    ],
+    "section": "connection",
+    "fields": [
+      {
+        "name": "policy",
+        "kind": "enum",
+        "required": true,
+        "many": false,
+        "choices": [
+          "on",
+          "off"
+        ],
+        "label": "field.policy"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.auto-connect.set",
+    "help": "Change auto-connect setting\n\nUsage: mullvad auto-connect set <POLICY>\n\nArguments:\n  <POLICY>  [possible values: on, off]\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "status"
+  },
+  {
+    "id": "beta-program.get",
+    "argv": [
+      "beta-program",
+      "get"
+    ],
+    "section": "maintenance",
+    "fields": [],
+    "readonly": true,
+    "stream": false,
+    "confirm": false,
+    "label": "op.beta-program.get",
+    "help": "Get beta notifications setting\n\nUsage: mullvad beta-program get\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "version"
+  },
+  {
+    "id": "beta-program.set",
+    "argv": [
+      "beta-program",
+      "set"
+    ],
+    "section": "maintenance",
+    "fields": [
+      {
+        "name": "policy",
+        "kind": "enum",
+        "required": true,
+        "many": false,
+        "choices": [
+          "on",
+          "off"
+        ],
+        "label": "field.policy"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.beta-program.set",
+    "help": "Change beta notifications setting\n\nUsage: mullvad beta-program set <POLICY>\n\nArguments:\n  <POLICY>  [possible values: on, off]\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "version"
+  },
+  {
+    "id": "lockdown-mode.get",
+    "argv": [
+      "lockdown-mode",
+      "get"
+    ],
+    "section": "network",
+    "fields": [],
+    "readonly": true,
+    "stream": false,
+    "confirm": false,
+    "label": "op.lockdown-mode.get",
+    "help": "Display the current lockdown mode setting\n\nUsage: mullvad lockdown-mode get\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "dns.get"
+  },
+  {
+    "id": "lockdown-mode.set",
+    "argv": [
+      "lockdown-mode",
+      "set"
+    ],
+    "section": "network",
+    "fields": [
+      {
+        "name": "policy",
+        "kind": "enum",
+        "required": true,
+        "many": false,
+        "choices": [
+          "on",
+          "off"
+        ],
+        "label": "field.policy"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.lockdown-mode.set",
+    "help": "Change the lockdown mode setting\n\nUsage: mullvad lockdown-mode set <POLICY>\n\nArguments:\n  <POLICY>  [possible values: on, off]\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "dns.get"
+  },
+  {
+    "id": "dns.get",
+    "argv": [
+      "dns",
+      "get"
+    ],
+    "section": "network",
+    "fields": [],
+    "readonly": true,
+    "stream": false,
+    "confirm": false,
+    "label": "op.dns.get",
+    "help": "Display the current DNS settings\n\nUsage: mullvad dns get\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "dns.get"
+  },
+  {
+    "id": "lan.get",
+    "argv": [
+      "lan",
+      "get"
+    ],
+    "section": "network",
+    "fields": [],
+    "readonly": true,
+    "stream": false,
+    "confirm": false,
+    "label": "op.lan.get",
+    "help": "Display the current local network sharing setting\n\nUsage: mullvad lan get\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "dns.get"
+  },
+  {
+    "id": "lan.set",
+    "argv": [
+      "lan",
+      "set"
+    ],
+    "section": "network",
+    "fields": [
+      {
+        "name": "policy",
+        "kind": "enum",
+        "required": true,
+        "many": false,
+        "choices": [
+          "allow",
+          "block"
+        ],
+        "label": "field.policy"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.lan.set",
+    "help": "Change allow LAN setting\n\nUsage: mullvad lan set <POLICY>\n\nArguments:\n  <POLICY>  [possible values: allow, block]\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "dns.get"
+  },
+  {
+    "id": "relay.get",
+    "argv": [
+      "relay",
+      "get"
+    ],
+    "section": "servers",
+    "fields": [],
+    "readonly": true,
+    "stream": false,
+    "confirm": false,
+    "label": "op.relay.get",
+    "help": "Display the current relay constraints\n\nUsage: mullvad relay get\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "relay.list",
+    "argv": [
+      "relay",
+      "list"
+    ],
+    "section": "servers",
+    "fields": [],
+    "readonly": true,
+    "stream": false,
+    "confirm": false,
+    "label": "op.relay.list",
+    "help": "List available relays\n\nUsage: mullvad relay list\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "relay.update",
+    "argv": [
+      "relay",
+      "update"
+    ],
+    "section": "servers",
+    "fields": [],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.relay.update",
+    "help": "Update the relay list\n\nUsage: mullvad relay update\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "api-access.get",
+    "argv": [
+      "api-access",
+      "get"
+    ],
+    "section": "api",
+    "fields": [],
+    "readonly": true,
+    "stream": false,
+    "confirm": false,
+    "label": "op.api-access.get",
+    "help": "Display the current API access method\n\nUsage: mullvad api-access get\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "api-access.list"
+  },
+  {
+    "id": "api-access.list",
+    "argv": [
+      "api-access",
+      "list"
+    ],
+    "section": "api",
+    "fields": [],
+    "readonly": true,
+    "stream": false,
+    "confirm": false,
+    "label": "op.api-access.list",
+    "help": "Lists all API access methods\n\n* = Enabled\n\nUsage: mullvad api-access list\n\nOptions:\n  -h, --help\n          Print help (see a summary with '-h')\n\n  -V, --version\n          Print version\n",
+    "state": "api-access.list"
+  },
+  {
+    "id": "api-access.edit",
+    "argv": [
+      "api-access",
+      "edit"
+    ],
+    "section": "api",
+    "fields": [
+      {
+        "name": "index",
+        "kind": "integer",
+        "required": true,
+        "many": false,
+        "minimum": 1,
+        "maximum": 100000,
+        "label": "field.index"
+      },
+      {
+        "name": "name",
+        "kind": "text",
+        "required": false,
+        "flag": "--name",
+        "many": false,
+        "label": "field.name"
+      },
+      {
+        "name": "username",
+        "kind": "text",
+        "required": false,
+        "flag": "--username",
+        "many": false,
+        "secret": true,
+        "label": "field.username"
+      },
+      {
+        "name": "password",
+        "kind": "text",
+        "required": false,
+        "flag": "--password",
+        "many": false,
+        "secret": true,
+        "label": "field.password"
+      },
+      {
+        "name": "cipher",
+        "kind": "cipher",
+        "required": false,
+        "flag": "--cipher",
+        "many": false,
+        "label": "field.cipher"
+      },
+      {
+        "name": "ip",
+        "kind": "ip",
+        "required": false,
+        "flag": "--ip",
+        "many": false,
+        "label": "field.ip"
+      },
+      {
+        "name": "port",
+        "kind": "port",
+        "required": false,
+        "flag": "--port",
+        "many": false,
+        "allow_any": false,
+        "label": "field.port"
+      },
+      {
+        "name": "local_port",
+        "kind": "port",
+        "required": false,
+        "flag": "--local-port",
+        "many": false,
+        "allow_any": false,
+        "label": "field.local_port"
+      },
+      {
+        "name": "transport_protocol",
+        "kind": "enum",
+        "required": false,
+        "flag": "--transport-protocol",
+        "many": false,
+        "choices": [
+          "TCP",
+          "UDP"
+        ],
+        "label": "field.transport_protocol"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.api-access.edit",
+    "help": "Edit a custom API access method\n\nUsage: mullvad api-access edit [OPTIONS] <INDEX>\n\nArguments:\n  <INDEX>  Which access method to pick\n\nOptions:\n      --name <NAME>\n          Name of the API access method in the Mullvad client \\[All\\]\n      --username <USERNAME>\n          Username for authentication \\[Socks5 (Remote proxy)\\]\n      --password <PASSWORD>\n          Password for authentication \\[Socks5 (Remote proxy), Shadowsocks\\]\n      --cipher <CIPHER>\n          Cipher to use \\[Shadowsocks\\]\n      --ip <IP>\n          The IP of the remote proxy server \\[Socks5 (Local & Remote proxy), Shadowsocks\\]\n      --port <PORT>\n          The port of the remote proxy server \\[Socks5 (Local & Remote proxy), Shadowsocks\\]\n      --local-port <LOCAL_PORT>\n          The port that the server on localhost is listening on \\[Socks5 (Local proxy)\\]\n      --transport-protocol <TRANSPORT_PROTOCOL>\n          The transport protocol used by the remote proxy \\[Socks5 (Local proxy)\\]\n  -h, --help\n          Print help\n  -V, --version\n          Print version\n",
+    "state": "api-access.list"
+  },
+  {
+    "id": "api-access.remove",
+    "argv": [
+      "api-access",
+      "remove"
+    ],
+    "section": "api",
+    "fields": [
+      {
+        "name": "index",
+        "kind": "integer",
+        "required": true,
+        "many": false,
+        "minimum": 1,
+        "maximum": 100000,
+        "label": "field.index"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.api-access.remove",
+    "help": "Remove a custom API access method\n\nUsage: mullvad api-access remove <INDEX>\n\nArguments:\n  <INDEX>  Which access method to pick\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "api-access.list"
+  },
+  {
+    "id": "api-access.enable",
+    "argv": [
+      "api-access",
+      "enable"
+    ],
+    "section": "api",
+    "fields": [
+      {
+        "name": "index",
+        "kind": "integer",
+        "required": true,
+        "many": false,
+        "minimum": 1,
+        "maximum": 100000,
+        "label": "field.index"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.api-access.enable",
+    "help": "Enable an API access method\n\nUsage: mullvad api-access enable <INDEX>\n\nArguments:\n  <INDEX>  Which access method to pick\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "api-access.list"
+  },
+  {
+    "id": "api-access.disable",
+    "argv": [
+      "api-access",
+      "disable"
+    ],
+    "section": "api",
+    "fields": [
+      {
+        "name": "index",
+        "kind": "integer",
+        "required": true,
+        "many": false,
+        "minimum": 1,
+        "maximum": 100000,
+        "label": "field.index"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.api-access.disable",
+    "help": "Disable an API access method\n\nUsage: mullvad api-access disable <INDEX>\n\nArguments:\n  <INDEX>  Which access method to pick\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "api-access.list"
+  },
+  {
+    "id": "api-access.use",
+    "argv": [
+      "api-access",
+      "use"
+    ],
+    "section": "api",
+    "fields": [
+      {
+        "name": "index",
+        "kind": "integer",
+        "required": true,
+        "many": false,
+        "minimum": 1,
+        "maximum": 100000,
+        "label": "field.index"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.api-access.use",
+    "help": "Try to use a specific API access method (If the API is unreachable, reverts back to the previous access method)\n\nSelecting \"Direct\" will connect to the Mullvad API without going through any proxy. This connection use https and is therefore encrypted.\n\nUsage: mullvad api-access use <INDEX>\n\nArguments:\n  <INDEX>\n          Which access method to pick\n\nOptions:\n  -h, --help\n          Print help (see a summary with '-h')\n\n  -V, --version\n          Print version\n",
+    "state": "api-access.list"
+  },
+  {
+    "id": "api-access.test",
+    "argv": [
+      "api-access",
+      "test"
+    ],
+    "section": "api",
+    "fields": [
+      {
+        "name": "index",
+        "kind": "integer",
+        "required": true,
+        "many": false,
+        "minimum": 1,
+        "maximum": 100000,
+        "label": "field.index"
+      }
+    ],
+    "readonly": true,
+    "stream": false,
+    "confirm": false,
+    "label": "op.api-access.test",
+    "help": "Try to reach the Mullvad API using a specific access method\n\nUsage: mullvad api-access test <INDEX>\n\nArguments:\n  <INDEX>  Which access method to pick\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "api-access.list"
+  },
+  {
+    "id": "anti-censorship.get",
+    "argv": [
+      "anti-censorship",
+      "get"
+    ],
+    "section": "tunnel",
+    "fields": [],
+    "readonly": true,
+    "stream": false,
+    "confirm": false,
+    "label": "op.anti-censorship.get",
+    "help": "Get current anti-censorship settings\n\nUsage: mullvad anti-censorship get\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "tunnel.get"
+  },
+  {
+    "id": "split-tunnel.list",
+    "argv": [
+      "split-tunnel",
+      "list"
+    ],
+    "section": "split",
+    "fields": [],
+    "readonly": true,
+    "stream": false,
+    "confirm": false,
+    "label": "op.split-tunnel.list",
+    "help": "List all processes that are excluded from the tunnel\n\nUsage: mullvad split-tunnel list\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "split-tunnel.list"
+  },
+  {
+    "id": "split-tunnel.add",
+    "argv": [
+      "split-tunnel",
+      "add"
+    ],
+    "section": "split",
+    "fields": [
+      {
+        "name": "pid",
+        "kind": "integer",
+        "required": true,
+        "many": false,
+        "minimum": 1,
+        "maximum": 2147483647,
+        "label": "field.pid"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.split-tunnel.add",
+    "help": "Add a PID to exclude from the tunnel\n\nUsage: mullvad split-tunnel add <PID>\n\nArguments:\n  <PID>  \n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "split-tunnel.list"
+  },
+  {
+    "id": "split-tunnel.delete",
+    "argv": [
+      "split-tunnel",
+      "delete"
+    ],
+    "section": "split",
+    "fields": [
+      {
+        "name": "pid",
+        "kind": "integer",
+        "required": true,
+        "many": false,
+        "minimum": 1,
+        "maximum": 2147483647,
+        "label": "field.pid"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.split-tunnel.delete",
+    "help": "Stop excluding a PID from the tunnel\n\nUsage: mullvad split-tunnel delete <PID>\n\nArguments:\n  <PID>  \n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "split-tunnel.list"
+  },
+  {
+    "id": "split-tunnel.clear",
+    "argv": [
+      "split-tunnel",
+      "clear"
+    ],
+    "section": "split",
+    "fields": [],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.split-tunnel.clear",
+    "help": "Stop excluding all processes from the tunnel\n\nUsage: mullvad split-tunnel clear\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "split-tunnel.list"
+  },
+  {
+    "id": "status.listen",
+    "argv": [
+      "status",
+      "listen"
+    ],
+    "section": "connection",
+    "fields": [],
+    "readonly": true,
+    "stream": true,
+    "confirm": false,
+    "label": "op.status.listen",
+    "help": "Listen for tunnel state changes\n\nUsage: mullvad status listen\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "status"
+  },
+  {
+    "id": "tunnel.get",
+    "argv": [
+      "tunnel",
+      "get"
+    ],
+    "section": "tunnel",
+    "fields": [],
+    "readonly": true,
+    "stream": false,
+    "confirm": false,
+    "label": "op.tunnel.get",
+    "help": "Show current tunnel options\n\nUsage: mullvad tunnel get\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "tunnel.get"
+  },
+  {
+    "id": "custom-list.new",
+    "argv": [
+      "custom-list",
+      "new"
+    ],
+    "section": "servers",
+    "fields": [
+      {
+        "name": "name",
+        "kind": "text",
+        "required": true,
+        "many": false,
+        "max_length": 30,
+        "label": "field.name"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.custom-list.new",
+    "help": "Create a new custom list\n\nUsage: mullvad custom-list new <NAME>\n\nArguments:\n  <NAME>  A name for the new custom list\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "custom-list.list",
+    "argv": [
+      "custom-list",
+      "list"
+    ],
+    "section": "servers",
+    "fields": [
+      {
+        "name": "name",
+        "kind": "text",
+        "required": false,
+        "many": false,
+        "label": "field.name"
+      }
+    ],
+    "readonly": true,
+    "stream": false,
+    "confirm": false,
+    "label": "op.custom-list.list",
+    "help": "Show all custom lists or retrieve a specific custom list\n\nUsage: mullvad custom-list list [NAME]\n\nArguments:\n  [NAME]  A custom list. If omitted, all custom lists are shown\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "custom-list.delete",
+    "argv": [
+      "custom-list",
+      "delete"
+    ],
+    "section": "servers",
+    "fields": [
+      {
+        "name": "name",
+        "kind": "text",
+        "required": true,
+        "many": false,
+        "label": "field.name"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.custom-list.delete",
+    "help": "Delete a custom list\n\nUsage: mullvad custom-list delete <NAME>\n\nArguments:\n  <NAME>  A custom list\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "log.set-level",
+    "argv": [
+      "log",
+      "set-level"
+    ],
+    "section": "maintenance",
+    "fields": [
+      {
+        "name": "level",
+        "kind": "enum",
+        "required": true,
+        "many": false,
+        "choices": [
+          "off",
+          "error",
+          "warn",
+          "info",
+          "debug",
+          "trace"
+        ],
+        "label": "field.level"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.log.set-level",
+    "help": "Set the log level of the daemon\n\nUsage: mullvad log set-level <LEVEL>\n\nArguments:\n  <LEVEL>\n          Possible values:\n          - off:   Turn off logging\n          - error: Log very serious errors\n          - warn:  Log hazardous situations\n          - info:  Log useful information\n          - debug: Log lower priority information\n          - trace: Log very low priority, often extremely verbose, information\n\nOptions:\n  -h, --help\n          Print help (see a summary with '-h')\n\n  -V, --version\n          Print version\n",
+    "state": "version"
+  },
+  {
+    "id": "log.set-rust-log",
+    "argv": [
+      "log",
+      "set-rust-log"
+    ],
+    "section": "maintenance",
+    "fields": [
+      {
+        "name": "filter",
+        "kind": "text",
+        "required": true,
+        "many": false,
+        "label": "field.filter"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.log.set-rust-log",
+    "help": "Set the log level of the daemon, using the `RUST_LOG` format.\n\nSet a custom log level per crate or module using the same format as the `RUST_LOG` environment variable. See the `env_logger` crate for more information: <https://docs.rs/env_logger/latest/env_logger/>\n\nUsage: mullvad log set-rust-log <FILTER>\n\nArguments:\n  <FILTER>\n          \n\nOptions:\n  -h, --help\n          Print help (see a summary with '-h')\n\n  -V, --version\n          Print version\n",
+    "state": "version"
+  },
+  {
+    "id": "log.listen",
+    "argv": [
+      "log",
+      "listen"
+    ],
+    "section": "maintenance",
+    "fields": [],
+    "readonly": true,
+    "stream": true,
+    "confirm": false,
+    "label": "op.log.listen",
+    "help": "Follow live updates to the daemon log file. Analogue to running `tail -f` on the daemon log file\n\nUsage: mullvad log listen\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "version"
+  },
+  {
+    "id": "dns.set.default",
+    "argv": [
+      "dns",
+      "set",
+      "default"
+    ],
+    "section": "network",
+    "fields": [
+      {
+        "name": "block_ads",
+        "kind": "bool",
+        "required": false,
+        "flag": "--block-ads",
+        "many": false,
+        "label": "field.block_ads"
+      },
+      {
+        "name": "block_trackers",
+        "kind": "bool",
+        "required": false,
+        "flag": "--block-trackers",
+        "many": false,
+        "label": "field.block_trackers"
+      },
+      {
+        "name": "block_malware",
+        "kind": "bool",
+        "required": false,
+        "flag": "--block-malware",
+        "many": false,
+        "label": "field.block_malware"
+      },
+      {
+        "name": "block_adult_content",
+        "kind": "bool",
+        "required": false,
+        "flag": "--block-adult-content",
+        "many": false,
+        "label": "field.block_adult_content"
+      },
+      {
+        "name": "block_gambling",
+        "kind": "bool",
+        "required": false,
+        "flag": "--block-gambling",
+        "many": false,
+        "label": "field.block_gambling"
+      },
+      {
+        "name": "block_social_media",
+        "kind": "bool",
+        "required": false,
+        "flag": "--block-social-media",
+        "many": false,
+        "label": "field.block_social_media"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.dns.set.default",
+    "help": "Use a default DNS server, with or without content blocking\n\nUsage: mullvad dns set default [OPTIONS]\n\nOptions:\n      --block-ads            Block domains known to be used for ads\n      --block-trackers       Block domains known to be used for tracking\n      --block-malware        Block domains known to be used by malware\n      --block-adult-content  Block domains known to be used for adult content\n      --block-gambling       Block domains known to be used for gambling\n      --block-social-media   Block domains related to social media\n  -h, --help                 Print help\n  -V, --version              Print version\n",
+    "state": "dns.get"
+  },
+  {
+    "id": "dns.set.custom",
+    "argv": [
+      "dns",
+      "set",
+      "custom"
+    ],
+    "section": "network",
+    "fields": [
+      {
+        "name": "servers",
+        "kind": "ip",
+        "required": true,
+        "many": true,
+        "label": "field.servers"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.dns.set.custom",
+    "help": "Set a list of custom DNS servers\n\nUsage: mullvad dns set custom <SERVERS>...\n\nArguments:\n  <SERVERS>...  One or more IP addresses pointing to DNS resolvers\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "dns.get"
+  },
+  {
+    "id": "relay.set.location",
+    "argv": [
+      "relay",
+      "set",
+      "location"
+    ],
+    "section": "servers",
+    "fields": [
+      {
+        "name": "country",
+        "kind": "location",
+        "required": true,
+        "many": false,
+        "label": "field.country"
+      },
+      {
+        "name": "city",
+        "kind": "city",
+        "required": false,
+        "many": false,
+        "label": "field.city"
+      },
+      {
+        "name": "hostname",
+        "kind": "text",
+        "required": false,
+        "many": false,
+        "label": "field.hostname"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.relay.set.location",
+    "help": "Select a relay using country, city or hostname. The 'mullvad relay list' command shows the available relays and their geographical location\n\nUsage: mullvad relay set location <COUNTRY> [CITY] [HOSTNAME] | <HOSTNAME>\n\n  Select relay using a country:\n\n\tmullvad relay set location se\n\n  Select relay using a country and city:\n\n\tmullvad relay set location se got\n\n  Select relay using a country, city and hostname:\n\n\tmullvad relay set location se got se-got-wg-004\n\n  Select relay using only its hostname:\n\n\tmullvad relay set location se-got-wg-004\n\nArguments:\n  <COUNTRY>   A two-letter country code, or 'any'\n  [CITY]      A three-letter city code\n  [HOSTNAME]  A host name, such as \"se-got-wg-101\"\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "relay.set.custom-list",
+    "argv": [
+      "relay",
+      "set",
+      "custom-list"
+    ],
+    "section": "servers",
+    "fields": [
+      {
+        "name": "custom_list_name",
+        "kind": "text",
+        "required": true,
+        "many": false,
+        "label": "field.custom_list_name"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.relay.set.custom-list",
+    "help": "Set custom list to select relays from. Use the 'custom-lists list' command to show available alternatives\n\nUsage: mullvad relay set custom-list <CUSTOM_LIST_NAME>\n\nArguments:\n  <CUSTOM_LIST_NAME>  Name of the custom list to use\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "relay.set.provider",
+    "argv": [
+      "relay",
+      "set",
+      "provider"
+    ],
+    "section": "servers",
+    "fields": [
+      {
+        "name": "providers",
+        "kind": "text",
+        "required": true,
+        "many": true,
+        "label": "field.providers"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.relay.set.provider",
+    "help": "Set hosting provider(s) to select relays from. The 'list' command shows the available relays and their providers\n\nUsage: mullvad relay set provider <PROVIDERS>...\n\nArguments:\n  <PROVIDERS>...  \n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "relay.set.ownership",
+    "argv": [
+      "relay",
+      "set",
+      "ownership"
+    ],
+    "section": "servers",
+    "fields": [
+      {
+        "name": "ownership",
+        "kind": "enum",
+        "required": true,
+        "many": false,
+        "choices": [
+          "any",
+          "owned",
+          "rented"
+        ],
+        "label": "field.ownership"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.relay.set.ownership",
+    "help": "Filter relays based on ownership. The 'list' command shows the available relays and whether they're rented\n\nUsage: mullvad relay set ownership <OWNERSHIP>\n\nArguments:\n  <OWNERSHIP>  Servers to select from: 'any', 'owned', or 'rented'\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "relay.set.ip-version",
+    "argv": [
+      "relay",
+      "set",
+      "ip-version"
+    ],
+    "section": "servers",
+    "fields": [
+      {
+        "name": "ip_version",
+        "kind": "enum",
+        "required": true,
+        "many": false,
+        "choices": [
+          "any",
+          "ipv4",
+          "ipv6"
+        ],
+        "label": "field.ip_version"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.relay.set.ip-version",
+    "help": "Set tunnel IP version constraint\n\nUsage: mullvad relay set ip-version <IP_VERSION>\n\nArguments:\n  <IP_VERSION>  IP protocol to use, or 'any'\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "relay.set.multihop",
+    "argv": [
+      "relay",
+      "set",
+      "multihop"
+    ],
+    "section": "servers",
+    "fields": [
+      {
+        "name": "use_multihop",
+        "kind": "enum",
+        "required": true,
+        "many": false,
+        "choices": [
+          "on",
+          "off"
+        ],
+        "label": "field.use_multihop"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.relay.set.multihop",
+    "help": "Enable or disable multihop\n\nUsage: mullvad relay set multihop <USE_MULTIHOP>\n\nArguments:\n  <USE_MULTIHOP>  Whether to enable multihop. The location constraints are specified with 'entry-location' [possible values: on, off]\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "relay.set.custom",
+    "argv": [
+      "relay",
+      "set",
+      "custom"
+    ],
+    "section": "servers",
+    "fields": [
+      {
+        "name": "host",
+        "kind": "text",
+        "required": true,
+        "many": false,
+        "label": "field.host"
+      },
+      {
+        "name": "port",
+        "kind": "port",
+        "required": true,
+        "many": false,
+        "allow_any": false,
+        "label": "field.port"
+      },
+      {
+        "name": "peer_pubkey",
+        "kind": "key",
+        "required": true,
+        "many": false,
+        "label": "field.peer_pubkey"
+      },
+      {
+        "name": "tunnel_ip",
+        "kind": "ip",
+        "required": true,
+        "many": true,
+        "label": "field.tunnel_ip"
+      },
+      {
+        "name": "v4_gateway",
+        "kind": "ip",
+        "required": true,
+        "flag": "--v4-gateway",
+        "many": false,
+        "label": "field.v4_gateway"
+      },
+      {
+        "name": "v6_gateway",
+        "kind": "ip",
+        "required": false,
+        "flag": "--v6-gateway",
+        "many": false,
+        "label": "field.v6_gateway"
+      },
+      {
+        "name": "private_key",
+        "kind": "key",
+        "required": true,
+        "secret": true,
+        "stdin": true,
+        "label": "field.private_key"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.relay.set.custom",
+    "help": "Set a custom WireGuard relay\n\nUsage: mullvad relay set custom [OPTIONS] --v4-gateway <V4_GATEWAY> <HOST> <PORT> <PEER_PUBKEY> <TUNNEL_IP>...\n\nArguments:\n  <HOST>          Hostname or IP\n  <PORT>          Remote port\n  <PEER_PUBKEY>   Base64 encoded public key of remote peer\n  <TUNNEL_IP>...  IP addresses of local tunnel interface\n\nOptions:\n      --v4-gateway <V4_GATEWAY>  IPv4 gateway address\n      --v6-gateway <V6_GATEWAY>  IPv6 gateway address\n  -h, --help                     Print help\n  -V, --version                  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "relay.override.get",
+    "argv": [
+      "relay",
+      "override",
+      "get"
+    ],
+    "section": "servers",
+    "fields": [],
+    "readonly": true,
+    "stream": false,
+    "confirm": false,
+    "label": "op.relay.override.get",
+    "help": "Show current custom fields for servers\n\nUsage: mullvad relay override get\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "relay.override.clear-all",
+    "argv": [
+      "relay",
+      "override",
+      "clear-all"
+    ],
+    "section": "servers",
+    "fields": [],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.relay.override.clear-all",
+    "help": "Unset custom IPs for all servers\n\nUsage: mullvad relay override clear-all [OPTIONS]\n\nOptions:\n  -y, --confirm  Clear overrides without asking for confirmation\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "api-access.add.shadowsocks",
+    "argv": [
+      "api-access",
+      "add",
+      "shadowsocks"
+    ],
+    "section": "api",
+    "fields": [
+      {
+        "name": "name",
+        "kind": "text",
+        "required": true,
+        "many": false,
+        "label": "field.name"
+      },
+      {
+        "name": "remote_ip",
+        "kind": "ip",
+        "required": true,
+        "many": false,
+        "label": "field.remote_ip"
+      },
+      {
+        "name": "remote_port",
+        "kind": "port",
+        "required": true,
+        "many": false,
+        "allow_any": false,
+        "label": "field.remote_port"
+      },
+      {
+        "name": "password",
+        "kind": "text",
+        "required": true,
+        "many": false,
+        "secret": true,
+        "label": "field.password"
+      },
+      {
+        "name": "disabled",
+        "kind": "bool",
+        "required": false,
+        "flag": "--disabled",
+        "many": false,
+        "label": "field.disabled"
+      },
+      {
+        "name": "cipher",
+        "kind": "cipher",
+        "required": true,
+        "flag": "--cipher",
+        "many": false,
+        "label": "field.cipher"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.api-access.add.shadowsocks",
+    "help": "Configure a custom Shadowsocks proxy to use as an API access method\n\nUsage: mullvad api-access add shadowsocks [OPTIONS] --cipher <CIPHER> <NAME> <REMOTE_IP> <REMOTE_PORT> <PASSWORD>\n\nArguments:\n  <NAME>         An easy to remember name for this custom proxy\n  <REMOTE_IP>    The IP of the remote Shadowsocks-proxy\n  <REMOTE_PORT>  Port on which the remote Shadowsocks-proxy listens for traffic\n  <PASSWORD>     Password for authentication\n\nOptions:\n  -d, --disabled         Disable the use of this custom access method. It has to be manually enabled at a later stage to be used when accessing the Mullvad API\n      --cipher <CIPHER>  Cipher to use\n  -h, --help             Print help\n  -V, --version          Print version\n",
+    "state": "api-access.list"
+  },
+  {
+    "id": "anti-censorship.set.mode",
+    "argv": [
+      "anti-censorship",
+      "set",
+      "mode"
+    ],
+    "section": "tunnel",
+    "fields": [
+      {
+        "name": "mode",
+        "kind": "enum",
+        "required": true,
+        "many": false,
+        "choices": [
+          "auto",
+          "off",
+          "wireguard-port",
+          "udp2tcp",
+          "shadowsocks",
+          "quic",
+          "lwo"
+        ],
+        "label": "field.mode"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.anti-censorship.set.mode",
+    "help": "Specify which anti-censorship method to use, if any\n\nUsage: mullvad anti-censorship set mode <MODE>\n\nArguments:\n  <MODE>  [possible values: auto, off, wireguard-port, udp2tcp, shadowsocks, quic, lwo]\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "tunnel.get"
+  },
+  {
+    "id": "anti-censorship.set.udp2tcp",
+    "argv": [
+      "anti-censorship",
+      "set",
+      "udp2tcp"
+    ],
+    "section": "tunnel",
+    "fields": [
+      {
+        "name": "port",
+        "kind": "port",
+        "required": true,
+        "flag": "--port",
+        "many": false,
+        "allow_any": true,
+        "label": "field.port"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.anti-censorship.set.udp2tcp",
+    "help": "Configure udp2tcp anti-censorship\n\nUsage: mullvad anti-censorship set udp2tcp --port <PORT>\n\nOptions:\n  -p, --port <PORT>  Port to use, or 'any'\n  -h, --help         Print help\n  -V, --version      Print version\n",
+    "state": "tunnel.get"
+  },
+  {
+    "id": "anti-censorship.set.shadowsocks",
+    "argv": [
+      "anti-censorship",
+      "set",
+      "shadowsocks"
+    ],
+    "section": "tunnel",
+    "fields": [
+      {
+        "name": "port",
+        "kind": "port",
+        "required": true,
+        "flag": "--port",
+        "many": false,
+        "allow_any": true,
+        "label": "field.port"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.anti-censorship.set.shadowsocks",
+    "help": "Configure Shadowsocks anti-censorship\n\nUsage: mullvad anti-censorship set shadowsocks --port <PORT>\n\nOptions:\n  -p, --port <PORT>  Port to use, or 'any'\n  -h, --help         Print help\n  -V, --version      Print version\n",
+    "state": "tunnel.get"
+  },
+  {
+    "id": "anti-censorship.set.wireguard-port",
+    "argv": [
+      "anti-censorship",
+      "set",
+      "wireguard-port"
+    ],
+    "section": "tunnel",
+    "fields": [
+      {
+        "name": "port",
+        "kind": "port",
+        "required": true,
+        "flag": "--port",
+        "many": false,
+        "allow_any": true,
+        "label": "field.port"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.anti-censorship.set.wireguard-port",
+    "help": "Configure WireGuard port anti-censorship\n\nUsage: mullvad anti-censorship set wireguard-port --port <PORT>\n\nOptions:\n  -p, --port <PORT>  Port to use\n  -h, --help         Print help\n  -V, --version      Print version\n",
+    "state": "tunnel.get"
+  },
+  {
+    "id": "anti-censorship.set.lwo",
+    "argv": [
+      "anti-censorship",
+      "set",
+      "lwo"
+    ],
+    "section": "tunnel",
+    "fields": [
+      {
+        "name": "port",
+        "kind": "port",
+        "required": true,
+        "flag": "--port",
+        "many": false,
+        "allow_any": true,
+        "label": "field.port"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.anti-censorship.set.lwo",
+    "help": "Configure LWO settings\n\nUsage: mullvad anti-censorship set lwo --port <PORT>\n\nOptions:\n  -p, --port <PORT>  Port to use\n  -h, --help         Print help\n  -V, --version      Print version\n",
+    "state": "tunnel.get"
+  },
+  {
+    "id": "tunnel.set.mtu",
+    "argv": [
+      "tunnel",
+      "set",
+      "mtu"
+    ],
+    "section": "tunnel",
+    "fields": [
+      {
+        "name": "mtu",
+        "kind": "integer",
+        "required": true,
+        "many": false,
+        "minimum": 0,
+        "maximum": 65535,
+        "allow_any": true,
+        "label": "field.mtu"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.tunnel.set.mtu",
+    "help": "Configure the tunnel MTU, or 'any'\n\nUsage: mullvad tunnel set mtu <MTU>\n\nArguments:\n  <MTU>  \n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "tunnel.get"
+  },
+  {
+    "id": "tunnel.set.quantum-resistant",
+    "argv": [
+      "tunnel",
+      "set",
+      "quantum-resistant"
+    ],
+    "section": "tunnel",
+    "fields": [
+      {
+        "name": "state",
+        "kind": "enum",
+        "required": true,
+        "many": false,
+        "choices": [
+          "on",
+          "off"
+        ],
+        "label": "field.state"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.tunnel.set.quantum-resistant",
+    "help": "Configure quantum-resistant key exchange\n\nUsage: mullvad tunnel set quantum-resistant <STATE>\n\nArguments:\n  <STATE>  [possible values: on, off]\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "tunnel.get"
+  },
+  {
+    "id": "tunnel.set.daita",
+    "argv": [
+      "tunnel",
+      "set",
+      "daita"
+    ],
+    "section": "tunnel",
+    "fields": [
+      {
+        "name": "state",
+        "kind": "enum",
+        "required": true,
+        "many": false,
+        "choices": [
+          "on",
+          "off"
+        ],
+        "label": "field.state"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.tunnel.set.daita",
+    "help": "Configure whether to enable DAITA\n\nUsage: mullvad tunnel set daita <STATE>\n\nArguments:\n  <STATE>  [possible values: on, off]\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "tunnel.get"
+  },
+  {
+    "id": "tunnel.set.daita-direct-only",
+    "argv": [
+      "tunnel",
+      "set",
+      "daita-direct-only"
+    ],
+    "section": "tunnel",
+    "fields": [
+      {
+        "name": "state",
+        "kind": "enum",
+        "required": true,
+        "many": false,
+        "choices": [
+          "on",
+          "off"
+        ],
+        "label": "field.state"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.tunnel.set.daita-direct-only",
+    "help": "Configure whether to enable DAITA direct only\n\nUsage: mullvad tunnel set daita-direct-only <STATE>\n\nArguments:\n  <STATE>  [possible values: on, off]\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "tunnel.get"
+  },
+  {
+    "id": "tunnel.set.allowed-ips",
+    "argv": [
+      "tunnel",
+      "set",
+      "allowed-ips"
+    ],
+    "section": "tunnel",
+    "fields": [
+      {
+        "name": "allowed_ips",
+        "kind": "cidrs",
+        "required": true,
+        "many": false,
+        "allow_empty": true,
+        "label": "field.allowed_ips"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.tunnel.set.allowed-ips",
+    "help": "Specify custom allowed IPs for WireGuard tunnels. Use comma-separated values of IPs and IP ranges in CIDR notation. A empty string resets to the default value, where all traffic is allowed, i.e. (0.0.0.0/0,::/0). For CIDR ranges, host bits must be zero (e.g., \"10.0.0.0/24\" is valid, \"10.0.0.1/24\" is not).\n\nExample: \"10.0.0.0/24,192.168.1.1,fd00::/8\"\n\nWARNING: Setting this value incorrectly may cause internet access to be blocked or the app to not work properly.\n\nUsage: mullvad tunnel set allowed-ips <ALLOWED_IPS>\n\nArguments:\n  <ALLOWED_IPS>\n          \n\nOptions:\n  -h, --help\n          Print help (see a summary with '-h')\n\n  -V, --version\n          Print version\n",
+    "state": "tunnel.get"
+  },
+  {
+    "id": "tunnel.set.rotation-interval",
+    "argv": [
+      "tunnel",
+      "set",
+      "rotation-interval"
+    ],
+    "section": "tunnel",
+    "fields": [
+      {
+        "name": "interval",
+        "kind": "integer",
+        "required": true,
+        "many": false,
+        "minimum": 24,
+        "maximum": 720,
+        "allow_any": true,
+        "label": "field.interval"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.tunnel.set.rotation-interval",
+    "help": "The key rotation interval. Number of hours, or 'any'\n\nUsage: mullvad tunnel set rotation-interval <INTERVAL>\n\nArguments:\n  <INTERVAL>  \n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "tunnel.get"
+  },
+  {
+    "id": "tunnel.set.rotate-key",
+    "argv": [
+      "tunnel",
+      "set",
+      "rotate-key"
+    ],
+    "section": "tunnel",
+    "fields": [],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.tunnel.set.rotate-key",
+    "help": "Replace the WireGuard key with a new one\n\nUsage: mullvad tunnel set rotate-key\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "tunnel.get"
+  },
+  {
+    "id": "tunnel.set.ipv6",
+    "argv": [
+      "tunnel",
+      "set",
+      "ipv6"
+    ],
+    "section": "tunnel",
+    "fields": [
+      {
+        "name": "state",
+        "kind": "enum",
+        "required": true,
+        "many": false,
+        "choices": [
+          "on",
+          "off"
+        ],
+        "label": "field.state"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.tunnel.set.ipv6",
+    "help": "Enable or disable IPv6 in the tunnel\n\nUsage: mullvad tunnel set ipv6 <STATE>\n\nArguments:\n  <STATE>  [possible values: on, off]\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "tunnel.get"
+  },
+  {
+    "id": "tunnel.set.userspace",
+    "argv": [
+      "tunnel",
+      "set",
+      "userspace"
+    ],
+    "section": "tunnel",
+    "fields": [
+      {
+        "name": "state",
+        "kind": "enum",
+        "required": true,
+        "many": false,
+        "choices": [
+          "on",
+          "off"
+        ],
+        "label": "field.state"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.tunnel.set.userspace",
+    "help": "Use userspace WireGuard\n\nUsage: mullvad tunnel set userspace <STATE>\n\nArguments:\n  <STATE>  [possible values: on, off]\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "tunnel.get"
+  },
+  {
+    "id": "custom-list.edit.add",
+    "argv": [
+      "custom-list",
+      "edit",
+      "add"
+    ],
+    "section": "servers",
+    "fields": [
+      {
+        "name": "name",
+        "kind": "text",
+        "required": true,
+        "many": false,
+        "label": "field.name"
+      },
+      {
+        "name": "country",
+        "kind": "location",
+        "required": true,
+        "many": false,
+        "label": "field.country"
+      },
+      {
+        "name": "city",
+        "kind": "city",
+        "required": false,
+        "many": false,
+        "label": "field.city"
+      },
+      {
+        "name": "hostname",
+        "kind": "text",
+        "required": false,
+        "many": false,
+        "label": "field.hostname"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.custom-list.edit.add",
+    "help": "Add a location to some custom list\n\nUsage: mullvad custom-list edit add <NAME> <COUNTRY> [CITY] [HOSTNAME]\n\nArguments:\n  <NAME>      A custom list\n  <COUNTRY>   A two-letter country code, or 'any'\n  [CITY]      A three-letter city code\n  [HOSTNAME]  A host name, such as \"se-got-wg-101\"\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "custom-list.edit.remove",
+    "argv": [
+      "custom-list",
+      "edit",
+      "remove"
+    ],
+    "section": "servers",
+    "fields": [
+      {
+        "name": "name",
+        "kind": "text",
+        "required": true,
+        "many": false,
+        "label": "field.name"
+      },
+      {
+        "name": "country",
+        "kind": "location",
+        "required": true,
+        "many": false,
+        "label": "field.country"
+      },
+      {
+        "name": "city",
+        "kind": "city",
+        "required": false,
+        "many": false,
+        "label": "field.city"
+      },
+      {
+        "name": "hostname",
+        "kind": "text",
+        "required": false,
+        "many": false,
+        "label": "field.hostname"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.custom-list.edit.remove",
+    "help": "Remove a location from some custom list\n\nUsage: mullvad custom-list edit remove <NAME> <COUNTRY> [CITY] [HOSTNAME]\n\nArguments:\n  <NAME>      A custom list\n  <COUNTRY>   A two-letter country code, or 'any'\n  [CITY]      A three-letter city code\n  [HOSTNAME]  A host name, such as \"se-got-wg-101\"\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "custom-list.edit.rename",
+    "argv": [
+      "custom-list",
+      "edit",
+      "rename"
+    ],
+    "section": "servers",
+    "fields": [
+      {
+        "name": "name",
+        "kind": "text",
+        "required": true,
+        "many": false,
+        "label": "field.name"
+      },
+      {
+        "name": "new_name",
+        "kind": "text",
+        "required": true,
+        "many": false,
+        "max_length": 30,
+        "label": "field.new_name"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.custom-list.edit.rename",
+    "help": "Rename a custom list\n\nUsage: mullvad custom-list edit rename <NAME> <NEW_NAME>\n\nArguments:\n  <NAME>      Current name of the custom list\n  <NEW_NAME>  A new name for the custom list\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "relay.set.entry.location",
+    "argv": [
+      "relay",
+      "set",
+      "entry",
+      "location"
+    ],
+    "section": "servers",
+    "fields": [
+      {
+        "name": "country",
+        "kind": "location",
+        "required": true,
+        "many": false,
+        "label": "field.country"
+      },
+      {
+        "name": "city",
+        "kind": "city",
+        "required": false,
+        "many": false,
+        "label": "field.city"
+      },
+      {
+        "name": "hostname",
+        "kind": "text",
+        "required": false,
+        "many": false,
+        "label": "field.hostname"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.relay.set.entry.location",
+    "help": "Location of entry relay. This can be 'any' or any location that is valid with 'set location', such as 'se got'\n\nUsage: mullvad relay set tunnel wireguard entry-location <COUNTRY> [CITY] [HOSTNAME] | <HOSTNAME>\n\n  Select entry location using a country:\n\n\tmullvad relay set tunnel wireguard entry-location se\n\n  Select entry location using a country and city:\n\n\tmullvad relay set tunnel wireguard entry-location se got\n\n  Select entry location using a country, city and hostname:\n\n\tmullvad relay set tunnel wireguard entry-location se got se-got-wg-004\n\n  Select entry location using only its hostname:\n\n\tmullvad relay set tunnel wireguard entry-location se-got-wg-004\n\nArguments:\n  <COUNTRY>   A two-letter country code, or 'any'\n  [CITY]      A three-letter city code\n  [HOSTNAME]  A host name, such as \"se-got-wg-101\"\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "relay.set.entry.custom-list",
+    "argv": [
+      "relay",
+      "set",
+      "entry",
+      "custom-list"
+    ],
+    "section": "servers",
+    "fields": [
+      {
+        "name": "custom_list_name",
+        "kind": "text",
+        "required": true,
+        "many": false,
+        "label": "field.custom_list_name"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.relay.set.entry.custom-list",
+    "help": "Name of custom list to use to pick entry endpoint\n\nUsage: mullvad relay set entry custom-list <CUSTOM_LIST_NAME>\n\nArguments:\n  <CUSTOM_LIST_NAME>  \n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "relay.override.set.ipv4",
+    "argv": [
+      "relay",
+      "override",
+      "set",
+      "ipv4"
+    ],
+    "section": "servers",
+    "fields": [
+      {
+        "name": "hostname",
+        "kind": "text",
+        "required": true,
+        "many": false,
+        "label": "field.hostname"
+      },
+      {
+        "name": "address",
+        "kind": "ip",
+        "required": true,
+        "many": false,
+        "label": "field.address"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.relay.override.set.ipv4",
+    "help": "Override entry IPv4 address for a given relay\n\nUsage: mullvad relay override set ipv4 <HOSTNAME> <ADDRESS>\n\nArguments:\n  <HOSTNAME>  The unique hostname for the server to set the override on\n  <ADDRESS>   The IPv4 address to use to connect to this server\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "relay.override.set.ipv6",
+    "argv": [
+      "relay",
+      "override",
+      "set",
+      "ipv6"
+    ],
+    "section": "servers",
+    "fields": [
+      {
+        "name": "hostname",
+        "kind": "text",
+        "required": true,
+        "many": false,
+        "label": "field.hostname"
+      },
+      {
+        "name": "address",
+        "kind": "ip",
+        "required": true,
+        "many": false,
+        "label": "field.address"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.relay.override.set.ipv6",
+    "help": "Override entry IPv6 address for a given relay\n\nUsage: mullvad relay override set ipv6 <HOSTNAME> <ADDRESS>\n\nArguments:\n  <HOSTNAME>  The unique hostname for the server to set the override on\n  <ADDRESS>   The IPv6 address to use to connect to this server\n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "relay.override.unset.ipv4",
+    "argv": [
+      "relay",
+      "override",
+      "unset",
+      "ipv4"
+    ],
+    "section": "servers",
+    "fields": [
+      {
+        "name": "hostname",
+        "kind": "text",
+        "required": true,
+        "many": false,
+        "label": "field.hostname"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.relay.override.unset.ipv4",
+    "help": "Remove overridden entry IPv4 address for the given server\n\nUsage: mullvad relay override unset ipv4 <HOSTNAME>\n\nArguments:\n  <HOSTNAME>  \n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "relay.override.unset.ipv6",
+    "argv": [
+      "relay",
+      "override",
+      "unset",
+      "ipv6"
+    ],
+    "section": "servers",
+    "fields": [
+      {
+        "name": "hostname",
+        "kind": "text",
+        "required": true,
+        "many": false,
+        "label": "field.hostname"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.relay.override.unset.ipv6",
+    "help": "Remove overridden entry IPv6 address for the given server\n\nUsage: mullvad relay override unset ipv6 <HOSTNAME>\n\nArguments:\n  <HOSTNAME>  \n\nOptions:\n  -h, --help     Print help\n  -V, --version  Print version\n",
+    "state": "relay.get"
+  },
+  {
+    "id": "api-access.add.socks5.remote",
+    "argv": [
+      "api-access",
+      "add",
+      "socks5",
+      "remote"
+    ],
+    "section": "api",
+    "fields": [
+      {
+        "name": "name",
+        "kind": "text",
+        "required": true,
+        "many": false,
+        "label": "field.name"
+      },
+      {
+        "name": "remote_ip",
+        "kind": "ip",
+        "required": true,
+        "many": false,
+        "label": "field.remote_ip"
+      },
+      {
+        "name": "remote_port",
+        "kind": "port",
+        "required": true,
+        "many": false,
+        "allow_any": false,
+        "label": "field.remote_port"
+      },
+      {
+        "name": "disabled",
+        "kind": "bool",
+        "required": false,
+        "flag": "--disabled",
+        "many": false,
+        "label": "field.disabled"
+      },
+      {
+        "name": "username",
+        "kind": "text",
+        "required": false,
+        "flag": "--username",
+        "many": false,
+        "secret": true,
+        "max_bytes": 255,
+        "label": "field.username"
+      },
+      {
+        "name": "password",
+        "kind": "text",
+        "required": false,
+        "flag": "--password",
+        "many": false,
+        "secret": true,
+        "max_bytes": 255,
+        "label": "field.password"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.api-access.add.socks5.remote",
+    "help": "Configure a remote SOCKS5 proxy\n\nUsage: mullvad api-access add socks5 remote [OPTIONS] <NAME> <REMOTE_IP> <REMOTE_PORT>\n\nArguments:\n  <NAME>         An easy to remember name for this custom proxy\n  <REMOTE_IP>    The IP of the remote proxy server\n  <REMOTE_PORT>  The port of the remote proxy server\n\nOptions:\n  -d, --disabled             Disable the use of this custom access method. It has to be manually enabled at a later stage to be used when accessing the Mullvad API\n  -u, --username <USERNAME>  Username for authentication against a remote SOCKS5 proxy\n  -p, --password <PASSWORD>  Password for authentication against a remote SOCKS5 proxy\n  -h, --help                 Print help\n  -V, --version              Print version\n",
+    "state": "api-access.list"
+  },
+  {
+    "id": "api-access.add.socks5.local",
+    "argv": [
+      "api-access",
+      "add",
+      "socks5",
+      "local"
+    ],
+    "section": "api",
+    "fields": [
+      {
+        "name": "name",
+        "kind": "text",
+        "required": true,
+        "many": false,
+        "label": "field.name"
+      },
+      {
+        "name": "local_port",
+        "kind": "port",
+        "required": true,
+        "many": false,
+        "allow_any": false,
+        "label": "field.local_port"
+      },
+      {
+        "name": "remote_ip",
+        "kind": "ip",
+        "required": true,
+        "many": false,
+        "label": "field.remote_ip"
+      },
+      {
+        "name": "remote_port",
+        "kind": "port",
+        "required": true,
+        "many": false,
+        "allow_any": false,
+        "label": "field.remote_port"
+      },
+      {
+        "name": "disabled",
+        "kind": "bool",
+        "required": false,
+        "flag": "--disabled",
+        "many": false,
+        "label": "field.disabled"
+      },
+      {
+        "name": "transport_protocol",
+        "kind": "enum",
+        "required": false,
+        "flag": "--transport-protocol",
+        "many": false,
+        "choices": [
+          "TCP",
+          "UDP"
+        ],
+        "label": "field.transport_protocol"
+      }
+    ],
+    "readonly": false,
+    "stream": false,
+    "confirm": true,
+    "label": "op.api-access.add.socks5.local",
+    "help": "Configure a local SOCKS5 proxy\n\nUsage: mullvad api-access add socks5 local [OPTIONS] <NAME> <LOCAL_PORT> <REMOTE_IP> <REMOTE_PORT>\n\nArguments:\n  <NAME>\n          An easy to remember name for this custom proxy\n\n  <LOCAL_PORT>\n          The port that the server on localhost is listening on\n\n  <REMOTE_IP>\n          The IP of the remote peer\n\n  <REMOTE_PORT>\n          The port of the remote peer\n\nOptions:\n  -d, --disabled\n          Disable the use of this custom access method. It has to be manually enabled at a later stage to be used when accessing the Mullvad API\n\n      --transport-protocol <TRANSPORT_PROTOCOL>\n          The Mullvad App can not know which transport protocol that the remote peer accepts, but it needs to know this in order to correctly exempt the connection traffic in the firewall.\n          \n          By default, the transport protocol is assumed to be `TCP`, but it can optionally be set to `UDP` as well.\n          \n          [default: TCP]\n\n  -h, --help\n          Print help (see a summary with '-h')\n\n  -V, --version\n          Print version\n",
+    "state": "api-access.list"
+  },
+  {
+    "id": "split.launch",
+    "argv": [],
+    "section": "split",
+    "fields": [
+      {
+        "name": "executable",
+        "kind": "executable",
+        "required": true,
+        "label": "field.executable"
+      },
+      {
+        "name": "arguments",
+        "kind": "argv",
+        "required": false,
+        "label": "field.arguments"
+      }
+    ],
+    "readonly": false,
+    "confirm": true,
+    "stream": false,
+    "label": "op.split.launch",
+    "state": "split-tunnel.list",
+    "help": "mullvad-exclude <executable> [arguments…]"
+  },
+  {
+    "id": "cli.version",
+    "argv": [
+      "--version"
+    ],
+    "section": "maintenance",
+    "fields": [],
+    "readonly": true,
+    "confirm": false,
+    "stream": false,
+    "label": "op.cli.version",
+    "state": "version",
+    "help": "mullvad --version"
+  }
+]
