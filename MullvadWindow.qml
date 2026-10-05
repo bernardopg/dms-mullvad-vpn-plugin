@@ -365,7 +365,7 @@ FloatingWindow {
                             onValueChanged: value => {
                                 const code = ["auto", "en", "pt-BR"][options.indexOf(value)];
                                 if (root.widgetRoot && root.widgetRoot.pluginService)
-                                    root.widgetRoot.pluginService.savePluginData("DankMullvadVPN", "language", code);
+                                    root.widgetRoot.pluginService.savePluginData("dankMullvadVpn", "language", code);
                                 else root.translations.language = code;
                             }
                             Accessible.name: root.translations.tr("language")
@@ -376,7 +376,7 @@ FloatingWindow {
                         text: root.translations.tr("location.show")
                         checked: root.widgetRoot ? root.widgetRoot.showLocation : true
                         enabled: !!(root.widgetRoot && root.widgetRoot.pluginService)
-                        onToggled: checked => root.widgetRoot.pluginService.savePluginData("DankMullvadVPN", "showLocation", checked)
+                        onToggled: checked => root.widgetRoot.pluginService.savePluginData("dankMullvadVpn", "showLocation", checked)
                         Accessible.name: text
                     }
                     StyledText {

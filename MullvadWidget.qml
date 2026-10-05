@@ -166,7 +166,7 @@ PluginComponent {
         }
     }
     IpcHandler {
-        target: "DankMullvadVPN"
+        target: "dankMullvadVpn"
         function toggle(): void { root.quickToggle(); }
         function open(): void { root.openWindow(); }
         function settings(): void { root.openPreferences(); }

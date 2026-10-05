@@ -69,7 +69,7 @@ ShellRoot {
             id: widget
             x: 16
             anchors.verticalCenter: parent.verticalCenter
-            pluginId: "DankMullvadVPN"
+            pluginId: "dankMullvadVpn"
             parentScreen: bar.screen
             axis: QtObject { property bool isVertical: false; property string edge: "top" }
         }
@@ -110,6 +110,7 @@ ShellRoot {
                 if (navigation < 12) {
                     switch (navigation) {
                     case 0:
+                        widget.i18n.language = "en"; // Deterministic screenshots for the README.
                         input.mouseClick(widget, widget.width / 2, widget.height / 2, Qt.RightButton);
                         if (!expect(widget.window.visible && !widget.window.preferences, "right-click opens window")) return;
                         widget.window.close();

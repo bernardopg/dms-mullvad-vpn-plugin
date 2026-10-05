@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def verify():
     manifest = json.loads((ROOT / "plugin.json").read_text())
-    assert manifest["id"] == "DankMullvadVPN"
+    assert manifest["id"] == "dankMullvadVpn"
     assert manifest["type"] == "widget"
     assert manifest["capabilities"] == ["dankbar-widget"]
     assert manifest["requires_dms"] == ">=1.6.2"

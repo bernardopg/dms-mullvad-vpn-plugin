@@ -1,10 +1,10 @@
 {
   "$schema": "https://github.com/AvengeMedia/DankMaterialShell/raw/refs/heads/master/PLUGINS/plugin-schema.json",
-  "id": "DankMullvadVPN",
+  "id": "dankMullvadVpn",
   "name": "Dank Mullvad VPN",
   "description": "Mullvad 2026.5 for Linux: connection, account, relays, tunnel, DNS and API access.",
   "version": "1.2.0",
-  "author": "DankMullvadVPN contributors",
+  "author": "bernardopg",
   "license": "MIT",
   "icon": "vpn_lock",
   "type": "widget",

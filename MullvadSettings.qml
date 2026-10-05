@@ -5,7 +5,7 @@ import qs.Modules.Plugins
 
 PluginSettings {
     id: root
-    pluginId: "DankMullvadVPN"
+    pluginId: "dankMullvadVpn"
     Translations { id: translations; language: root.loadValue("language", "auto") }
     SelectionSetting {
         settingKey: "language"
