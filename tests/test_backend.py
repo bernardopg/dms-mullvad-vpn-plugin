@@ -148,9 +148,10 @@ class BackendTests(unittest.TestCase):
         self.assertEqual(self.request("connect")["error"]["code"], "unsupported")
 
     def test_failure_timeout_missing_binary(self):
-        for mode, expected in (("failure","daemon"),("timeout","timeout")):
+        # Generous limit for failure: a loaded machine must not turn it into a timeout.
+        for mode, expected, limit in (("failure", "daemon", 10), ("timeout", "timeout", 0.1)):
             with patch.dict(backend.ENV, {"FAKE_MODE":mode}):
-                self.adapter.timeout = 0.1
+                self.adapter.timeout = limit
                 result = self.request("status")
                 self.assertEqual(result["error"]["code"], expected)
                 self.assertNotIn("secret", json.dumps(result))
