@@ -1,6 +1,7 @@
 name: Check
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
     inputs:
@@ -10,11 +11,21 @@ on:
         default: false
 permissions:
   contents: read
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   core:
+    name: core
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.10", "3.13"]
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
       - run: scripts/check --core
   qml:
     if: github.event_name == 'workflow_dispatch' && inputs.qml

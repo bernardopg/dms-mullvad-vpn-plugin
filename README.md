@@ -1,141 +1,126 @@
 # Dank Mullvad VPN
 
-Plugin Linux para **DankMaterialShell 1.6.2 / Quickshell** e **Mullvad CLI 2026.5**.
-Oferece widget na DankBar, resumo no popout e uma janela com **88 formulários**,
-em inglês e português brasileiro. As configurações da VPN continuam no daemon.
+**The entire Mullvad VPN CLI, one click away in your DankBar.**
 
-## Instalação
+[![Check](https://github.com/bernardopg/dms-mullvad-vpn-plugin/actions/workflows/check.yml/badge.svg)](https://github.com/bernardopg/dms-mullvad-vpn-plugin/actions/workflows/check.yml)
+![DMS](https://img.shields.io/badge/DankMaterialShell-%E2%89%A51.6.2-7c4dff)
+![Mullvad](https://img.shields.io/badge/Mullvad_CLI-2026.5-294d73)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-Requisitos: DMS 1.6.2 ou mais recente, Quickshell, Python 3.10+ e Mullvad VPN
-2026.5 com `mullvad` e `mullvad-exclude` acessíveis no PATH do processo do DMS.
-O daemon Mullvad deve estar ativo e acessível ao usuário. Não há dependências
-Python adicionais.
+A [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell) plugin
+that puts every `mullvad` command — **88 typed forms, 100% of CLI 2026.5** — behind
+a native Material 3 interface. Connect, switch relays, tune DAITA, multihop,
+anti-censorship, DNS blocking, split tunneling and API access without opening a
+terminal, and without giving up the safety of the CLI.
 
-1. Coloque este diretório em
-   `~/.config/DankMaterialShell/plugins/DankMullvadVPN`.
-2. Abra **Configurações → Plugins** no DMS, atualize a descoberta dos plugins
-   e habilite **Dank Mullvad VPN** com as permissões do manifesto.
-3. Adicione o widget `DankMullvadVPN` à DankBar nas configurações da barra.
+![Dank Mullvad VPN window](assets/screenshot.png)
 
-O plugin pode ser habilitado sem reiniciar o DMS. Os testes gráficos usam uma
-instância temporária do Quickshell com imports reais do DMS e backend simulado;
-não alteram a VPN nem habilitam o plugin na sessão principal.
+## Highlights
 
-## Uso
+- **Live status in the bar** — state color, city and relay, updated by
+  `mullvad status --json listen`, with a polling fallback.
+- **Full coverage** — connection, account and devices, vouchers, relays and
+  overrides, custom lists, multihop, DAITA, quantum resistance, IPv6, MTU, key
+  rotation, anti-censorship, DNS, LAN, lockdown, split tunneling,
+  `mullvad-exclude`, API access proxies, logs, import/export and resets.
+- **See exactly what runs** — every form previews the equivalent `mullvad`
+  command (secrets masked), with one-click copy.
+- **Safe by design** — every change needs a confirmation that repeats the
+  command; destructive actions are flagged in red. No shell, no command console,
+  argument arrays only, timeouts and process cleanup.
+- **Credentials stay out of disk** — accounts, vouchers, passwords and private
+  keys are never stored in DMS settings, and are redacted from all output.
+  Private keys travel over stdin.
+- **Built for the keyboard** — `Ctrl+F` search across all functions, `↑/↓` to
+  pick, `Ctrl+Enter` to run, `Ctrl+R` to refresh, `Esc` to back out.
+- **Native look** — DMS components and theme colors, light and dark, with a
+  compact layout below 820 px.
+- **English and Português (Brasil)**, following the DMS locale.
+- **Zero extra dependencies** — Python 3 standard library only.
 
-Clique no widget para abrir o resumo e use **Abrir janela completa** para acessar
-os formulários. Clique com o botão direito para abrir a janela diretamente.
-O resumo fecha ao abrir a janela, inclusive quando uma ação pede confirmação.
-O widget também aceita foco por Tab e abertura com Enter/Espaço.
-A conexão rápida abre uma confirmação antes de conectar ou desconectar.
-O estado e a localização vêm de `status --json`; `status --json listen` acompanha
-mudanças e há uma consulta periódica de recuperação.
-O painel de configurações completas consulta `export-settings -` por leitura,
-oculta credenciais e permite conferir opções ausentes nos getters textuais.
+| Confirmation | Compact layout |
+|---|---|
+| ![Confirmation dialog](assets/confirmation.png) | ![Compact layout](assets/compact.png) |
 
-Na janela, a árvore lateral agrupa as funções por seção, com contagem e ícones
-de leitura, alteração e acompanhamento contínuo. A busca global filtra pelo nome
-traduzido ou pelo comando; ↑/↓ no campo de busca percorrem os resultados. Em
-janelas menores, a árvore dá lugar a seletores de seção e operação. O resumo
-mostra estado colorido, localização, servidor/IP quando o daemon informa,
-reconexão e a ação de conectar/desconectar. **Preferências** abre
-idioma e exibição da localização. Os controles usam as cores e componentes do DMS.
+## Requirements
 
-`Ctrl+F` foca a busca; `Ctrl+R` atualiza as leituras; `Ctrl+Enter` executa
-o formulário atual (alterações continuam exigindo confirmação). Escape limpa uma busca,
-fecha as preferências ou fecha a janela. Em uma confirmação, Escape cancela,
-e Tab/Shift+Tab circulam entre cancelar e executar. Fechar a janela, inclusive
-pelo gerenciador de janelas, cancela a ação pendente e limpa os campos.
+- DankMaterialShell **1.6.2+** with Quickshell
+- Mullvad VPN **2026.5**, with `mullvad` (and `mullvad-exclude` for split
+  tunneling) on the `PATH` of the DMS process, and the daemon running
+- Python **3.10+**
 
-O formulário apresenta campos tipados com a opção do CLI correspondente, selos
-(leitura, confirmação, contínuo, indisponível) e o comando equivalente, com
-credenciais mascaradas e botão de cópia. Abaixo, abas mostram resultado, estado
-atual, JSON completo, ajuda do CLI e logs, em fonte monoespaçada e copiáveis.
-A confirmação repete o comando e destaca em vermelho ações destrutivas. Campos com `*` são obrigatórios;
-campos opcionais vazios são omitidos. Entradas variádicas usam valores separados
-por espaços; argumentos de aplicativos usam um vetor JSON, como
-`["--new-window", "https://example.org"]`. Não existe console de comandos.
-A referência inglesa do CLI pode ser expandida no formulário.
+Works on any distribution and any Wayland compositor supported by DMS.
 
-As seções cobrem conexão automática, conta e dispositivos, vouchers, servidores
-e overrides, listas personalizadas, multihop, DAITA, criptografia, IPv6, MTU,
-rotação de chaves, anticensura, DNS, bloqueios de conteúdo, LAN, bloqueio fora da
-VPN, exclusão por PID, lançamento por `mullvad-exclude`, proxies para a API,
-logs, exportação/importação e resets. Veja a [matriz completa](docs/matriz-cli.md).
+## Install
 
-Toda mutação requer confirmação contextual. Reset de fábrica também remove
-conta, caches e logs. Exportações exigem caminho absoluto, usam permissão `0600`
-e **recusam sobrescrever** arquivos; importações exigem um objeto JSON e recusam
-links simbólicos. A chave privada de um servidor próprio é enviada por stdin.
+**From DMS:** open *Settings → Plugins → Browse*, find **Dank Mullvad VPN** and
+install it. Or run `dms plugins install dankMullvadVpn`.
 
-## Preferências e IPC
-
-O idioma automático segue `SessionData.locale` do DMS, com fallback à localidade
-Qt e ao inglês. É possível escolher English ou Português (Brasil). O DMS salva
-somente idioma e exibição da localização na barra.
+**Manually:**
 
 ```sh
-dms ipc call DankMullvadVPN open
-dms ipc call DankMullvadVPN settings
-dms ipc call DankMullvadVPN toggle
+git clone https://github.com/bernardopg/dms-mullvad-vpn-plugin \
+  ~/.config/DankMaterialShell/plugins/DankMullvadVPN
 ```
 
-`toggle` solicita a conexão/desconexão e abre a confirmação na janela.
-`settings` abre as preferências da interface. Alternativamente, use o IPC
-diretamente pela instância Quickshell que executa o DMS.
+Then enable **Dank Mullvad VPN** in *Settings → Plugins* and add the
+`dankMullvadVpn` widget to your DankBar. No shell restart needed.
 
-## Desenvolvimento e testes
+## Usage
+
+- **Left click** the widget for the summary: status, relay, connect/disconnect.
+- **Right click** (or *Open full window*) for the full interface: a navigation
+  tree grouped by section, a typed form, and output tabs for the result, current
+  daemon state, full settings JSON, CLI help and live logs.
+- Fields marked `*` are required; empty optional fields keep current values.
+  Variadic fields take space-separated values; application arguments take a
+  JSON array such as `["--new-window", "https://example.org"]`.
+
+### IPC
 
 ```sh
-python3 -m unittest discover -s tests
-scripts/check
-scripts/check --core
+dms ipc call dankMullvadVpn toggle    # connect/disconnect (asks for confirmation)
+dms ipc call dankMullvadVpn open      # open the full window
+dms ipc call dankMullvadVpn settings  # open preferences
 ```
 
-`scripts/check` verifica manifesto, cobertura de todos os comandos/opções,
-traduções, matriz, testes Python e carregamento QML com os imports reais do DMS.
-O teste gráfico usa o backend simulado, diretórios temporários e uma instância
-separada. Requer uma sessão Wayland acessível; não reinicia a sessão principal.
-Defina `DMS_QML_ROOT=/caminho/do/DMS` se necessário. `--core` omite explicitamente
-o teste gráfico e é o modo portátil da CI; o workflow também permite executar
-o teste completo num runner Linux preparado com DMS/Wayland.
-O teste gráfico também requer o módulo QtTest do Qt 6 e envia cliques e teclas
-a uma barra temporária: abertura do resumo/janela, busca, confirmação modal,
-cancelamento, ciclo de foco, atalhos, preferências e layout de 640 px.
+Bind them to keys in your compositor for instant access.
 
-O backend simulado pode ser ativado para demonstração com
-`DANK_MULLVAD_MOCK=1`. A interface mostra **SIMULAÇÃO**; nessa condição, nenhuma
-ação real da VPN é executada.
+### Safety notes
 
-Leia [Repository Guidelines](AGENTS.md), [arquitetura e segurança](docs/arquitetura.md),
-[matriz CLI/interface](docs/matriz-cli.md) e
-[checklist de validação/restauração](docs/validacao-manual.md).
+Factory reset also removes the account login, caches and logs. Exports require
+an absolute path, are written with `0600` permissions and **never overwrite** a
+file. Imports accept only a JSON object and refuse symlinks. Mutations are never
+retried: a timeout may happen after the daemon already applied a change.
 
-## Solução de problemas
+## Troubleshooting
 
-- **Executável ausente:** confira `mullvad --version` e o PATH do serviço DMS.
-  O PATH do terminal pode ser diferente do PATH do serviço.
-- **Daemon indisponível:** consulte `systemctl status mullvad-daemon` e
-  `mullvad status --json` como o mesmo usuário do DMS.
-- **Operação indisponível:** o adaptador verifica ajuda e opções da versão
-  instalada e desativa o formulário com explicação. A versão-alvo é 2026.5.
-- **Formato mudou:** o erro identifica o parser; atualize a fixture e o parser
-  somente depois de conferir a saída e os testes.
-- **Acompanhamento parado:** o status tenta recuperar automaticamente. Logs
-  são iniciados/parados no formulário de manutenção e ficam limitados às
-  últimas 200 linhas. A leitura de logs pode depender das permissões do Linux.
-- **Adaptador parado:** recarregue o plugin pelo DMS. Não há retentativa de
-  mutações: um timeout pode ocorrer depois de o daemon ter aplicado a ação.
-- **Exportação falhou:** escolha outro arquivo e confira a permissão do
-  diretório. O arquivo existente permanece intacto.
+| Symptom | Check |
+|---|---|
+| Executable missing | `mullvad --version` from the DMS environment — its `PATH` may differ from your terminal's. |
+| Daemon unavailable | `systemctl status mullvad-daemon` and `mullvad status --json` as the DMS user. |
+| Function unavailable | The adapter probes the installed CLI and disables unsupported forms. Target version is 2026.5. |
+| Format changed | The error names the parser. Update fixtures and parser only after checking real output. |
+| Adapter stopped | Reload the plugin from DMS settings. |
 
-## Evidência de validação
+## Development
 
-A implementação foi verificada localmente com Mullvad 2026.5 e imports reais
-do DMS 1.6.2. As leituras reais consultaram estado, opções e listas. **Nenhuma
-conexão, desconexão, alteração, criação/revogação de conta ou reset real foi
-executado.** A CI foi configurada, mas não foi publicada nem executada remotamente.
-O [registro de validação](docs/validacao-manual.md) distingue testes simulados,
-leituras reais e mutações pendentes.
+```sh
+scripts/check          # contracts, unit tests and a real DMS QML smoke test
+scripts/check --core   # portable checks only (CI), no graphical session
+DANK_MULLVAD_MOCK=1    # simulated backend: the UI shows SIMULATION, no VPN changes
+```
 
-Licença MIT. Projeto comunitário, sem afiliação com Mullvad ou DankMaterialShell.
+The QML smoke test runs an isolated Quickshell instance with the real DMS
+imports and the simulated backend; it never touches your running shell. Set
+`DMS_QML_ROOT` if DMS is not found automatically.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md), [AGENTS.md](AGENTS.md) and the
+Portuguese design docs: [architecture and security](docs/arquitetura.md),
+[CLI coverage matrix](docs/matriz-cli.md) and
+[manual validation checklist](docs/validacao-manual.md).
+
+## License
+
+[MIT](LICENSE). Community project, not affiliated with Mullvad VPN AB or
+AvengeMedia.

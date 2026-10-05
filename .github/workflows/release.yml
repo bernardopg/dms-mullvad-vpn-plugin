@@ -1,0 +1,24 @@
+name: Release
+on:
+  push:
+    tags: ["v*.*.*"]
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tag matches plugin.json
+        run: |
+          version=$(python3 -c "import json; print(json.load(open('plugin.json'))['version'])")
+          test "v$version" = "$GITHUB_REF_NAME" || { echo "plugin.json is $version, tag is $GITHUB_REF_NAME"; exit 1; }
+      - run: scripts/check --core
+      - name: Extract release notes
+        run: |
+          awk -v v="${GITHUB_REF_NAME#v}" '$0 ~ "^## \\[" v "\\]" {on=1; next} /^## \[/ {on=0} on' CHANGELOG.md > notes.md
+          test -s notes.md
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file notes.md --verify-tag

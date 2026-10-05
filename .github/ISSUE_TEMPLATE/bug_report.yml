@@ -1,0 +1,59 @@
+name: Bug report
+description: Something in the widget, window or adapter does not work.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. **Never paste account numbers, vouchers, passwords or private keys.**
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what you saw instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open the full window
+        2. Select "Servers and lists → Set location"
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: plugin
+    attributes:
+      label: Plugin version
+      description: From `plugin.json` or the DMS plugin list.
+      placeholder: 1.2.0
+    validations:
+      required: true
+  - type: input
+    id: dms
+    attributes:
+      label: DankMaterialShell version
+      placeholder: v1.6.2
+    validations:
+      required: true
+  - type: input
+    id: mullvad
+    attributes:
+      label: Mullvad CLI version
+      description: Output of `mullvad --version`.
+      placeholder: mullvad-cli 2026.5
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: Distribution and compositor
+      placeholder: Arch Linux, Hyprland
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error message or logs
+      description: The error shown in the Result tab, or `journalctl --user -u dms` output. Redact private data.
+      render: text
