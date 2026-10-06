@@ -24,6 +24,8 @@ ColumnLayout {
                 try { params[field.name] = JSON.parse(raw); } catch (error) { params[field.name] = raw; }
             } else if (field.many && field.kind !== "multi" && typeof raw === "string") {
                 params[field.name] = raw.split(/\s+/).filter(v => v.length);
+            } else if (field.kind === "enum" && field.required && !raw) {
+                params[field.name] = field.choices[0]; // Same default submit() sends.
             } else {
                 params[field.name] = raw;
             }

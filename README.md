@@ -13,7 +13,7 @@ a native Material 3 interface. Connect, switch relays, tune DAITA, multihop,
 anti-censorship, DNS blocking, split tunneling and API access without opening a
 terminal, and without giving up the safety of the CLI.
 
-![Dank Mullvad VPN window](assets/screenshot.png)
+![Dank Mullvad VPN](assets/screenshot.png)
 
 ## Highlights
 
@@ -37,6 +37,10 @@ terminal, and without giving up the safety of the CLI.
   compact layout below 820 px.
 - **English and Português (Brasil)**, following the DMS locale.
 - **Zero extra dependencies** — Python 3 standard library only.
+
+![Full window on a live DankMaterialShell session](assets/window.png)
+
+<sub>Live capture on DankMaterialShell 1.6.2. Location, relay and IP are blurred.</sub>
 
 | Confirmation | Compact layout |
 |---|---|

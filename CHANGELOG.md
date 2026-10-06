@@ -32,6 +32,7 @@ First public release.
 
 ### Fixed
 
+- The command preview now shows the default value of required choice fields.
 - The confirmation dialog no longer loses its binding after `Esc`, so later
   confirmations always open.
 
