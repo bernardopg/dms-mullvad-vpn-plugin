@@ -73,6 +73,14 @@ ShellRoot {
             parentScreen: bar.screen
             axis: QtObject { property bool isVertical: false; property string edge: "top" }
         }
+        MullvadWidget {
+            id: secondWidget
+            x: 400
+            anchors.verticalCenter: parent.verticalCenter
+            pluginId: "dankMullvadVpn"
+            parentScreen: bar.screen
+            axis: QtObject { property bool isVertical: false; property string edge: "top" }
+        }
     }
     TestCase { id: input; parent: widget.window.surfaceItem; when: false }
     MullvadSettings { id: preferences }
@@ -111,6 +119,7 @@ ShellRoot {
                     switch (navigation) {
                     case 0:
                         widget.i18n.language = "en"; // Deterministic screenshots for the README.
+                        if (!expect(secondWidget.backend === widget.backend && widget.backend.users.length === 2 && [widget, secondWidget].includes(widget.backend.owner), "bars share one engine and one IPC owner")) return;
                         input.mouseClick(widget, widget.width / 2, widget.height / 2, Qt.RightButton);
                         if (!expect(widget.window.visible && !widget.window.preferences, "right-click opens window")) return;
                         widget.window.close();

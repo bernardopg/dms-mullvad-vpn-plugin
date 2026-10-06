@@ -47,6 +47,6 @@ used the real CLI and which were simulated.
 
 ## Releases
 
-Bump `version` in `plugin.json` and the engine URL in `MullvadWidget.qml`, add a
+Bump `version` in `plugin.json` and `engineVersion` in `MullvadWidget.qml`, add a
 `CHANGELOG.md` section, then push a `vX.Y.Z` tag. The release workflow verifies the
 version and publishes the notes.

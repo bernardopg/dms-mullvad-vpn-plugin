@@ -6,6 +6,7 @@ import Quickshell.Io
 import qs.Common
 import qs.Widgets
 import qs.Modules.Plugins
+import "Shared.js" as Shared
 
 PluginComponent {
     id: root
@@ -19,7 +20,8 @@ PluginComponent {
     readonly property string statusIcon: vpnState === "connected" ? "vpn_lock" : vpnState === "error" ? "error" : changing ? "sync" : "vpn_lock_off"
     // DMS reloads the widget URL but caches child types. Version the adapter component
     // so this release can be applied without restarting the user's shell.
-    readonly property var backend: Qt.createComponent(Qt.resolvedUrl("MullvadEngine.qml").toString() + "?v=1.2.1", Component.PreferSynchronous).createObject(root)
+    readonly property string engineVersion: "1.2.2"
+    readonly property var backend: Shared.engine(engineVersion, () => Qt.createComponent(Qt.resolvedUrl("MullvadEngine.qml").toString() + "?v=" + engineVersion, Component.PreferSynchronous).createObject(null))
     property alias window: fullWindow
     property alias i18n: translations
     popoutWidth: 420
@@ -33,26 +35,36 @@ PluginComponent {
     Keys.onReturnPressed: root.triggerPopout()
     Keys.onSpacePressed: root.triggerPopout()
 
+    Component.onCompleted: Shared.attach(engineVersion, root)
+    Component.onDestruction: Shared.detach(engineVersion, root)
+
     Translations { id: translations; language: root.pluginData.language || "auto" }
     Connections {
         target: root.backend
-        function onConfirmationRequired() { root.openWindow(); }
+        // Only the bar the user last used (or the owner) opens its window for a confirmation.
+        function onConfirmationRequired() {
+            if (root.backend.target() === root)
+                root.openWindow();
+        }
     }
     MullvadWindow { id: fullWindow; engine: root.backend; translations: translations; widgetRoot: root }
 
     function quickToggle() {
         if (!root.backend.ready || root.backend.busy || ["connecting", "disconnecting"].includes(root.backend.status.state))
             return;
+        root.backend.activeWidget = root;
         root.backend.prepare(root.backend.status.state === "connected" ? "disconnect" : "connect", {});
     }
 
     function openWindow() {
+        root.backend.activeWidget = root;
         closePopout();
         fullWindow.preferences = false;
         fullWindow.open();
     }
 
     function openPreferences() {
+        root.backend.activeWidget = root;
         closePopout();
         fullWindow.openSettings();
     }
@@ -164,11 +176,5 @@ PluginComponent {
                 }
             }
         }
-    }
-    IpcHandler {
-        target: "dankMullvadVpn"
-        function toggle(): void { root.quickToggle(); }
-        function open(): void { root.openWindow(); }
-        function settings(): void { root.openPreferences(); }
     }
 }
