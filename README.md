@@ -1,6 +1,11 @@
+<div align="center">
+  <img src="assets/DankMullvadVPN-Logo-Green.png" width="128" height="128" alt="Dank Mullvad VPN">
+
 # Dank Mullvad VPN
 
 **The entire Mullvad VPN CLI, one click away in your DankBar.**
+
+</div>
 
 [![Check](https://github.com/bernardopg/dms-mullvad-vpn-plugin/actions/workflows/check.yml/badge.svg)](https://github.com/bernardopg/dms-mullvad-vpn-plugin/actions/workflows/check.yml)
 ![DMS](https://img.shields.io/badge/DankMaterialShell-%E2%89%A51.6.2-7c4dff)
@@ -40,10 +45,10 @@ terminal, and without giving up the safety of the CLI.
 
 ![Full window on a live DankMaterialShell session](assets/window.png)
 
-<sub>Live capture on DankMaterialShell 1.6.2. Location, relay and IP are blurred.</sub>
+_Live capture on DankMaterialShell 1.6.2. Location, relay and IP are blurred._
 
-| Confirmation | Compact layout |
-|---|---|
+| Confirmation                                    | Compact layout                        |
+| ----------------------------------------------- | ------------------------------------- |
 | ![Confirmation dialog](assets/confirmation.png) | ![Compact layout](assets/compact.png) |
 
 ## Requirements
@@ -57,7 +62,7 @@ Works on any distribution and any Wayland compositor supported by DMS.
 
 ## Install
 
-**From DMS:** open *Settings → Plugins → Browse*, find **Dank Mullvad VPN** and
+**From DMS:** open _Settings → Plugins → Browse_, find **Dank Mullvad VPN** and
 install it. Or run `dms plugins install dankMullvadVpn`.
 
 **Manually:**
@@ -67,13 +72,13 @@ git clone https://github.com/bernardopg/dms-mullvad-vpn-plugin \
   ~/.config/DankMaterialShell/plugins/DankMullvadVPN
 ```
 
-Then enable **Dank Mullvad VPN** in *Settings → Plugins* and add the
+Then enable **Dank Mullvad VPN** in _Settings → Plugins_ and add the
 `dankMullvadVpn` widget to your DankBar. No shell restart needed.
 
 ## Usage
 
 - **Left click** the widget for the summary: status, relay, connect/disconnect.
-- **Right click** (or *Open full window*) for the full interface: a navigation
+- **Right click** (or _Open full window_) for the full interface: a navigation
   tree grouped by section, a typed form, and output tabs for the result, current
   daemon state, full settings JSON, CLI help and live logs.
 - Fields marked `*` are required; empty optional fields keep current values.
@@ -99,13 +104,13 @@ retried: a timeout may happen after the daemon already applied a change.
 
 ## Troubleshooting
 
-| Symptom | Check |
-|---|---|
-| Executable missing | `mullvad --version` from the DMS environment — its `PATH` may differ from your terminal's. |
-| Daemon unavailable | `systemctl status mullvad-daemon` and `mullvad status --json` as the DMS user. |
+| Symptom              | Check                                                                                          |
+| -------------------- | ---------------------------------------------------------------------------------------------- |
+| Executable missing   | `mullvad --version` from the DMS environment — its `PATH` may differ from your terminal's.     |
+| Daemon unavailable   | `systemctl status mullvad-daemon` and `mullvad status --json` as the DMS user.                 |
 | Function unavailable | The adapter probes the installed CLI and disables unsupported forms. Target version is 2026.5. |
-| Format changed | The error names the parser. Update fixtures and parser only after checking real output. |
-| Adapter stopped | Reload the plugin from DMS settings. |
+| Format changed       | The error names the parser. Update fixtures and parser only after checking real output.        |
+| Adapter stopped      | Reload the plugin from DMS settings.                                                           |
 
 ## Development
 

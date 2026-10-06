@@ -4,6 +4,28 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+## [1.3.0] - 2026-10-06
+
+### Added
+
+- Tinted Mullvad logo across bar pills, popout and window header, following the
+  connection state; error and transitional states keep their status glyphs.
+- Header badge reads the plugin version from its manifest; heart and GitHub
+  actions link to the plugin's registry voting issue and repository.
+
+### Fixed
+
+- Navigation scrollbar is slim and rounded with its own gutter, keeping section
+  arrows unobstructed.
+- Toggle option rows size to their labels and descriptions, with full-height
+  hover backgrounds and wrapping text.
+- Sidebar command selection now matches operation IDs instead of QML object
+  identity, preventing the empty-function message when opening commands.
+- QML regression checks activate every command through its sidebar row in both
+  languages and themes.
+
 ## [1.2.2] - 2026-10-06
 
 ### Changed
@@ -64,6 +86,7 @@ First public release.
 - The confirmation dialog no longer loses its binding after `Esc`, so later
   confirmations always open.
 
+[1.3.0]: https://github.com/bernardopg/dms-mullvad-vpn-plugin/releases/tag/v1.3.0
 [1.2.2]: https://github.com/bernardopg/dms-mullvad-vpn-plugin/releases/tag/v1.2.2
 [1.2.1]: https://github.com/bernardopg/dms-mullvad-vpn-plugin/releases/tag/v1.2.1
 [1.2.0]: https://github.com/bernardopg/dms-mullvad-vpn-plugin/releases/tag/v1.2.0

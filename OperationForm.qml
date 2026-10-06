@@ -21,7 +21,11 @@ ColumnLayout {
         for (const field of operation.fields) {
             const raw = values[field.name];
             if (field.kind === "argv" && raw) {
-                try { params[field.name] = JSON.parse(raw); } catch (error) { params[field.name] = raw; }
+                try {
+                    params[field.name] = JSON.parse(raw);
+                } catch (error) {
+                    params[field.name] = raw;
+                }
             } else if (field.many && field.kind !== "multi" && typeof raw === "string") {
                 params[field.name] = raw.split(/\s+/).filter(v => v.length);
             } else if (field.kind === "enum" && field.required && !raw) {
@@ -33,7 +37,10 @@ ColumnLayout {
         return engine.commandLine(operation.id, params);
     }
     spacing: Theme.spacingM
-    onOperationChanged: { values = ({}); validation = ""; }
+    onOperationChanged: {
+        values = ({});
+        validation = "";
+    }
 
     function setValue(name, value) {
         const next = Object.assign({}, values);
@@ -67,7 +74,9 @@ ColumnLayout {
                 }
             }
             if (field.required && !field.allow_empty && (params[field.name] === undefined || params[field.name] === "" || params[field.name].length === 0)) {
-                validation = translations.tr("invalid.required", {field: translations.tr(field.label)});
+                validation = translations.tr("invalid.required", {
+                    field: translations.tr(field.label)
+                });
                 return;
             }
             if (!field.required && params[field.name] === "")
@@ -80,6 +89,70 @@ ColumnLayout {
         for (const field of operation.fields)
             if (field.secret)
                 setValue(field.name, "");
+    }
+
+    component FormToggle: StyledRect {
+        id: option
+        property string text: ""
+        property string description: ""
+        property bool checked: false
+        signal toggled(bool checked)
+        implicitHeight: Math.max(optionLabels.implicitHeight, optionSwitch.height) + Theme.spacingM * 2
+        radius: Theme.cornerRadius
+        color: "transparent"
+        activeFocusOnTab: enabled
+        Accessible.role: Accessible.CheckBox
+        Accessible.name: text
+        Accessible.description: description
+        Accessible.checkable: true
+        Accessible.checked: checked
+        Accessible.onPressAction: if (enabled)
+            option.toggled(!checked)
+        Keys.onSpacePressed: if (enabled)
+            option.toggled(!checked)
+        Keys.onReturnPressed: if (enabled)
+            option.toggled(!checked)
+        StateLayer {
+            anchors.fill: parent
+            disabled: !option.enabled
+            cornerRadius: option.radius
+            stateColor: Theme.primary
+            onClicked: option.toggled(!option.checked)
+        }
+        Column {
+            id: optionLabels
+            anchors.left: parent.left
+            anchors.right: optionSwitch.left
+            anchors.leftMargin: Theme.spacingM
+            anchors.rightMargin: Theme.spacingM
+            anchors.verticalCenter: parent.verticalCenter
+            spacing: Theme.spacingXS
+            opacity: option.enabled ? 1 : 0.4
+            StyledText {
+                width: parent.width
+                text: option.text
+                font.weight: Font.Medium
+                wrapMode: Text.Wrap
+            }
+            StyledText {
+                width: parent.width
+                text: option.description
+                visible: text !== ""
+                color: Theme.surfaceVariantText
+                font.pixelSize: Theme.fontSizeSmall
+                wrapMode: Text.Wrap
+            }
+        }
+        DankToggle {
+            id: optionSwitch
+            anchors.right: parent.right
+            anchors.rightMargin: Theme.spacingM
+            anchors.verticalCenter: parent.verticalCenter
+            hideText: true
+            activeFocusOnTab: false
+            checked: option.checked
+            onToggled: checked => option.toggled(checked)
+        }
     }
 
     component Badge: StyledRect {
@@ -95,8 +168,20 @@ ColumnLayout {
             id: badgeRow
             anchors.centerIn: parent
             spacing: Theme.spacingXS
-            DankIcon { name: badge.iconName; size: 14; color: badge.accent; visible: name !== ""; anchors.verticalCenter: parent.verticalCenter }
-            StyledText { id: badgeText; color: badge.accent; font.pixelSize: Theme.fontSizeSmall; font.weight: Font.Medium; anchors.verticalCenter: parent.verticalCenter }
+            DankIcon {
+                name: badge.iconName
+                size: 14
+                color: badge.accent
+                visible: name !== ""
+                anchors.verticalCenter: parent.verticalCenter
+            }
+            StyledText {
+                id: badgeText
+                color: badge.accent
+                font.pixelSize: Theme.fontSizeSmall
+                font.weight: Font.Medium
+                anchors.verticalCenter: parent.verticalCenter
+            }
         }
     }
 
@@ -163,7 +248,9 @@ ColumnLayout {
 
     StyledText {
         Layout.fillWidth: true
-        text: root.operation && !root.available ? root.translations.tr("unsupported", {version: root.engine.version}) : root.translations.tr("form.hint")
+        text: root.operation && !root.available ? root.translations.tr("unsupported", {
+            version: root.engine.version
+        }) : root.translations.tr("form.hint")
         color: root.operation && !root.available ? Theme.error : Theme.surfaceVariantText
         font.pixelSize: Theme.fontSizeSmall
         wrapMode: Text.Wrap
@@ -201,7 +288,8 @@ ColumnLayout {
                 sourceComponent: fieldRow.toggle ? boolInput : fieldRow.modelData.kind === "enum" ? enumInput : fieldRow.modelData.kind === "multi" ? multiInput : textInput
                 Component {
                     id: boolInput
-                    DankToggle {
+                    FormToggle {
+                        objectName: "booleanOption_" + fieldRow.modelData.name
                         width: parent.width
                         text: root.translations.tr(fieldRow.modelData.label)
                         description: fieldRow.modelData.flag
@@ -228,16 +316,16 @@ ColumnLayout {
                         spacing: Theme.spacingS
                         Repeater {
                             model: fieldRow.modelData.choices
-                            DankToggle {
+                            FormToggle {
                                 required property string modelData
-                                width: Math.max(160, implicitWidth)
-                                height: 44
+                                width: Math.min(parent.width, 220)
                                 text: modelData
                                 enabled: root.available && !root.engine.busy
                                 checked: (root.values[fieldRow.modelData.name] || []).indexOf(modelData) !== -1
                                 onToggled: checked => {
                                     let items = (root.values[fieldRow.modelData.name] || []).filter(v => v !== modelData);
-                                    if (checked) items.push(modelData);
+                                    if (checked)
+                                        items.push(modelData);
                                     root.setValue(fieldRow.modelData.name, items);
                                 }
                                 Accessible.name: modelData
@@ -277,7 +365,11 @@ ColumnLayout {
             anchors.fill: parent
             anchors.margins: Theme.spacingS
             spacing: Theme.spacingS
-            DankIcon { name: "error"; size: 18; color: Theme.error }
+            DankIcon {
+                name: "error"
+                size: 18
+                color: Theme.error
+            }
             StyledText {
                 Layout.fillWidth: true
                 text: root.validation
@@ -324,7 +416,11 @@ ColumnLayout {
                 buttonSize: 28
                 iconSize: 16
                 tooltipText: root.translations.tr("copy")
-                onClicked: { commandText.selectAll(); commandText.copy(); commandText.deselect(); }
+                onClicked: {
+                    commandText.selectAll();
+                    commandText.copy();
+                    commandText.deselect();
+                }
                 Accessible.name: root.translations.tr("copy")
             }
         }
@@ -353,13 +449,19 @@ ColumnLayout {
             textColor: Theme.surfaceText
             enabled: !root.engine.busy && (root.operation && root.operation.id === "log.listen" ? root.engine.logging : root.engine.watching)
             onClicked: {
-                root.engine.request("stream.stop", {operation: root.operation.id});
-                if (root.operation.id === "log.listen") root.engine.logging = false;
-                else root.engine.watching = false;
+                root.engine.request("stream.stop", {
+                    operation: root.operation.id
+                });
+                if (root.operation.id === "log.listen")
+                    root.engine.logging = false;
+                else
+                    root.engine.watching = false;
             }
             Accessible.name: text
         }
-        Item { Layout.fillWidth: true }
+        Item {
+            Layout.fillWidth: true
+        }
         StyledText {
             visible: !!root.operation && root.operation.stream
             text: root.translations.tr((root.operation && root.operation.id === "log.listen" ? root.engine.logging : root.engine.watching) ? "stream.active" : "stream.inactive")

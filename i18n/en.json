@@ -16,6 +16,8 @@
   "state.error": "Tunnel error",
   "state.unknown": "State unavailable",
   "loading": "Loading…",
+  "header.upvote": "Upvote on the DankLinux plugin registry",
+  "header.repository": "Source code on GitHub",
   "refresh": "Refresh",
   "close": "Close",
   "cancel": "Cancel",

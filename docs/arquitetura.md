@@ -20,7 +20,7 @@ mantendo o texto legível quando o idioma muda. Formulários usam `DankDropdown`
 `DankToggle` e `DankTextField`; a saída técnica fica em abas (`DankButtonGroup`) com texto monoespaçado.
 O popout usa altura calculada pelo conteúdo e fecha antes de ativar a janela.
 O engine é criado com uma URL versionada: a recarga de plugins do DMS 1.6.2
-mantém tipos QML filhos em cache. Isso permite aplicar a versão 1.2.2 por IPC,
+mantém tipos QML filhos em cache. Isso permite aplicar a versão 1.3.0 por IPC,
 sem reiniciar a shell. Atualize essa URL quando publicar outra revisão do engine.
 Consultas periódicas de status atualizam o resumo e as configurações atuais,
 preservando o resultado da última ação do usuário. Falhas continuam visíveis.
@@ -52,19 +52,24 @@ Cada requisição contém `id` inteiro ou texto, `op` registrada, `params` objet
 e, para mutações, `confirmed: true`. Um exemplo de leitura:
 
 ```json
-{"id":12,"op":"status","params":{},"confirmed":false}
+{ "id": 12, "op": "status", "params": {}, "confirmed": false }
 ```
 
 Resposta de sucesso:
 
 ```json
-{"id":12,"op":"status","ok":true,"data":{"state":"disconnected"}}
+{ "id": 12, "op": "status", "ok": true, "data": { "state": "disconnected" } }
 ```
 
 Resposta de falha:
 
 ```json
-{"id":12,"op":"status","ok":false,"error":{"code":"daemon","detail":"…"}}
+{
+  "id": 12,
+  "op": "status",
+  "ok": false,
+  "error": { "code": "daemon", "detail": "…" }
+}
 ```
 
 Os eventos usam `event: "status.listen"` ou `event: "log.listen"`, `ok` e

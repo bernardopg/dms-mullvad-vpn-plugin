@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """A process-level fake: never calls the real daemon."""
+
 import json
 import os
 import sys
@@ -25,14 +26,23 @@ elif "--help" in argv:
 elif "listen" in argv:
     if argv[0] == "status":
         print('{"state":"connecting"}', flush=True)
-        print('{"relay_settings":{},"tunnel_options":{},"password":"secret"}', flush=True)
-        print('{\n"state":"connected","details":{"location":{"city":"Test"}}\n}', flush=True)
+        print(
+            '{"relay_settings":{},"tunnel_options":{},"password":"secret"}', flush=True
+        )
+        print(
+            '{\n"state":"connected","details":{"location":{"city":"Test"}}\n}',
+            flush=True,
+        )
     else:
         print("account: 1234567890123456", flush=True)
         print("password: secret", flush=True)
     time.sleep(60)
 elif argv[0] == "status":
-    print("changed format" if mode == "format" else '{"state":"connected","details":{"location":{"city":"Test"}}}')
+    print(
+        "changed format"
+        if mode == "format"
+        else '{"state":"connected","details":{"location":{"city":"Test"}}}'
+    )
 elif argv[0] == "export-settings":
     print('{"settings":{"allow_lan":true}}')
 elif argv[0] == "import-settings":
@@ -44,5 +54,12 @@ else:
     if key in fixture:
         print(fixture[key]["stdout"], end="")
     else:
-        prefix = next((command for command in fixture if argv[:len(command.split())] == command.split()), None)
+        prefix = next(
+            (
+                command
+                for command in fixture
+                if argv[: len(command.split())] == command.split()
+            ),
+            None,
+        )
         print(fixture[prefix]["stdout"] if prefix else "Operation completed", end="")

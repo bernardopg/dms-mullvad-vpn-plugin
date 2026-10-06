@@ -55,31 +55,31 @@
 
 ## Checklist de mutações pendentes
 
-| Família | Teste manual pendente | Restauração |
-|---|---|---|
-| Conexão | [ ] conectar / desconectar / reconectar, com e sem espera | Restaurar estado e servidor anterior |
-| Políticas | [ ] conexão automática, beta, LAN e bloqueio fora da VPN | Reaplicar cada valor anterior; conferir internet e LAN |
-| Conta | [ ] login / logout / criação | Reentrar na conta anterior pelo aplicativo oficial; criação usa nova conta |
-| Dispositivos | [ ] revogação | Pode exigir cadastrar novo dispositivo; a revogação anterior não é reversível |
-| Vouchers | [ ] resgate | Usar voucher de teste autorizado; resgate não é reversível |
-| Relays | [ ] localização / provedor / propriedade / IP / atualização | Reaplicar critérios anteriores e aguardar lista/estado final |
-| Multihop | [ ] ativação, entrada por localização e listas | Restaurar entrada/saída e flag anterior |
-| Servidor próprio | [ ] host, portas, gateways, IPs e chaves via stdin | Voltar à seleção normal anterior; descartar chave de teste com segurança |
-| Overrides | [ ] set/unset IPv4/IPv6 e limpeza completa | Reaplicar overrides do backup ou valores anotados |
-| Listas | [ ] criar / adicionar / remover / renomear / excluir | Importar backup ou recriar listas e referências anteriores |
-| Túnel | [ ] MTU, quantum, DAITA, DAITA direto, IPv6, userspace | Reaplicar opções anteriores e verificar conectividade |
-| Chaves | [ ] intervalo 24–720 h / any e rotação imediata | Restaurar intervalo; chave rotacionada não retorna pelo backup de settings |
-| Rotas | [ ] allowed IPs, incluindo restauração com campo vazio | Reaplicar redes anteriores; confirmar rotas IPv4/IPv6 |
-| Anticensura | [ ] auto/off/WireGuard/UDP2TCP/Shadowsocks/QUIC/LWO e portas | Restaurar modo/portas anteriores e verificar handshake |
-| DNS | [ ] seis bloqueios e DNS próprio IPv4/IPv6 | Restaurar política/servidores anteriores; conferir resolução |
-| Split por PID | [ ] adicionar / excluir / limpar PIDs | Reaplicar os PIDs ainda existentes; observar descendentes |
-| Lançamento excluído | [ ] executar app e argumentos literais | Encerrar o app de teste e conferir PIDs fora da VPN |
-| API | [ ] adicionar/editar/remover, ativar/desativar/usar métodos | Restaurar métodos e seleção anteriores; conferir acesso à conta |
-| Proxies | [ ] SOCKS5 remoto/local, autenticação, TCP/UDP e Shadowsocks | Restaurar método anterior; remover proxy de teste |
-| Logs | [ ] nível / filtro e acompanhamento real | Reaplicar nível/filtro anterior; parar acompanhamento |
-| Arquivos | [ ] exportar/importar com daemon real | Importar backup autorizado; confirmar estado e todas as seções |
-| Reset parcial | [ ] reset-settings com cada conjunto preserve | Importar backup e restaurar valores não exportados |
-| Reset de fábrica | [ ] factory-reset | Reentrar na conta, importar backup, restaurar processos; logs/caches removidos não voltam |
+| Família             | Teste manual pendente                                        | Restauração                                                                               |
+| ------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| Conexão             | [ ] conectar / desconectar / reconectar, com e sem espera    | Restaurar estado e servidor anterior                                                      |
+| Políticas           | [ ] conexão automática, beta, LAN e bloqueio fora da VPN     | Reaplicar cada valor anterior; conferir internet e LAN                                    |
+| Conta               | [ ] login / logout / criação                                 | Reentrar na conta anterior pelo aplicativo oficial; criação usa nova conta                |
+| Dispositivos        | [ ] revogação                                                | Pode exigir cadastrar novo dispositivo; a revogação anterior não é reversível             |
+| Vouchers            | [ ] resgate                                                  | Usar voucher de teste autorizado; resgate não é reversível                                |
+| Relays              | [ ] localização / provedor / propriedade / IP / atualização  | Reaplicar critérios anteriores e aguardar lista/estado final                              |
+| Multihop            | [ ] ativação, entrada por localização e listas               | Restaurar entrada/saída e flag anterior                                                   |
+| Servidor próprio    | [ ] host, portas, gateways, IPs e chaves via stdin           | Voltar à seleção normal anterior; descartar chave de teste com segurança                  |
+| Overrides           | [ ] set/unset IPv4/IPv6 e limpeza completa                   | Reaplicar overrides do backup ou valores anotados                                         |
+| Listas              | [ ] criar / adicionar / remover / renomear / excluir         | Importar backup ou recriar listas e referências anteriores                                |
+| Túnel               | [ ] MTU, quantum, DAITA, DAITA direto, IPv6, userspace       | Reaplicar opções anteriores e verificar conectividade                                     |
+| Chaves              | [ ] intervalo 24–720 h / any e rotação imediata              | Restaurar intervalo; chave rotacionada não retorna pelo backup de settings                |
+| Rotas               | [ ] allowed IPs, incluindo restauração com campo vazio       | Reaplicar redes anteriores; confirmar rotas IPv4/IPv6                                     |
+| Anticensura         | [ ] auto/off/WireGuard/UDP2TCP/Shadowsocks/QUIC/LWO e portas | Restaurar modo/portas anteriores e verificar handshake                                    |
+| DNS                 | [ ] seis bloqueios e DNS próprio IPv4/IPv6                   | Restaurar política/servidores anteriores; conferir resolução                              |
+| Split por PID       | [ ] adicionar / excluir / limpar PIDs                        | Reaplicar os PIDs ainda existentes; observar descendentes                                 |
+| Lançamento excluído | [ ] executar app e argumentos literais                       | Encerrar o app de teste e conferir PIDs fora da VPN                                       |
+| API                 | [ ] adicionar/editar/remover, ativar/desativar/usar métodos  | Restaurar métodos e seleção anteriores; conferir acesso à conta                           |
+| Proxies             | [ ] SOCKS5 remoto/local, autenticação, TCP/UDP e Shadowsocks | Restaurar método anterior; remover proxy de teste                                         |
+| Logs                | [ ] nível / filtro e acompanhamento real                     | Reaplicar nível/filtro anterior; parar acompanhamento                                     |
+| Arquivos            | [ ] exportar/importar com daemon real                        | Importar backup autorizado; confirmar estado e todas as seções                            |
+| Reset parcial       | [ ] reset-settings com cada conjunto preserve                | Importar backup e restaurar valores não exportados                                        |
+| Reset de fábrica    | [ ] factory-reset                                            | Reentrar na conta, importar backup, restaurar processos; logs/caches removidos não voltam |
 
 ## Verificação da interface na sessão principal
 

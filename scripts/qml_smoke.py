@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Test real DMS imports and interactions in an isolated Wayland instance."""
+
 import os
 import shutil
 import subprocess
@@ -14,8 +15,14 @@ from test_backend import sample
 
 
 def find_dms():
-    candidates = list(Path(os.environ.get("XDG_RUNTIME_DIR", "/run/user/1000")).glob("danklinux-shell/*"))
-    candidates.extend([Path.home() / ".config/quickshell/dms", Path("/usr/share/dms/quickshell")])
+    candidates = list(
+        Path(os.environ.get("XDG_RUNTIME_DIR", "/run/user/1000")).glob(
+            "danklinux-shell/*"
+        )
+    )
+    candidates.extend(
+        [Path.home() / ".config/quickshell/dms", Path("/usr/share/dms/quickshell")]
+    )
     override = os.environ.get("DMS_QML_ROOT")
     if override:
         candidates.insert(0, Path(override))
@@ -42,10 +49,15 @@ def run():
         catalog = json.loads((ROOT / "operations.json").read_text())
         samples = {}
         for operation in catalog:
-            samples[operation["id"]] = {field["name"]: sample(field) for field in operation["fields"]}
-            if operation["id"].endswith("ipv6") and "address" in samples[operation["id"]]:
+            samples[operation["id"]] = {
+                field["name"]: sample(field) for field in operation["fields"]
+            }
+            if (
+                operation["id"].endswith("ipv6")
+                and "address" in samples[operation["id"]]
+            ):
                 samples[operation["id"]]["address"] = "::1"
-        shell = '''import QtQuick
+        shell = """import QtQuick
 import QtQuick.Controls
 import QtTest
 import Quickshell
@@ -214,6 +226,13 @@ ShellRoot {
                         widget.openWindow();
                         widget.backend.result = null;
                         widget.backend.request("status", {}, false, true);
+                        if (!expect(widget.window.pluginVersion !== "", "manifest version in header")) return;
+                        if (!expect(input.findChild(widget.window.surfaceItem, "registryLink") !== null && input.findChild(widget.window.surfaceItem, "repositoryLink") !== null, "header links")) return;
+                        const repositoryIcon = input.findChild(widget.window.surfaceItem, "repositoryIcon");
+                        if (!expect(repositoryIcon !== null && repositoryIcon.status === Image.Ready, "GitHub icon loaded")) return;
+                        const scrollBar = input.findChild(widget.window.surfaceItem, "navigationScrollBar");
+                        const navigationContent = input.findChild(widget.window.surfaceItem, "navigationContent");
+                        if (!expect(scrollBar !== null && navigationContent.mapToItem(widget.window.surfaceItem, navigationContent.width, 0).x < scrollBar.mapToItem(widget.window.surfaceItem, 0, 0).x, "scrollbar has a reserved gutter")) return;
                         console.log("SMOKE NAVIGATION PASS");
                         break;
                     }
@@ -229,8 +248,15 @@ ShellRoot {
                     widget.i18n.language = Math.floor(step / widget.backend.catalog.length) % 2 ? "pt-BR" : "en";
                     Theme.isLightMode = Math.floor(step / (widget.backend.catalog.length * 2)) % 2 === 1;
                     widget.window.section = op.section;
-                    widget.window.operationIndex = widget.window.operations.findIndex(item => item.id === op.id);
+                    const operationRow = input.findChild(widget.window.surfaceItem, "operationRow_" + op.id);
+                    if (!expect(operationRow !== null, "operation row exists: " + op.id)) return;
+                    operationRow.activated();
+                    if (!expect(widget.window.operation && widget.window.operation.id === op.id, "sidebar selects operation: " + op.id)) return;
                     if (phase === 0) { phase = 1; return; }
+                    for (const field of op.fields.filter(field => field.type === "bool")) {
+                        const option = input.findChild(widget.window.surfaceItem, "booleanOption_" + field.name);
+                        if (!expect(option !== null && option.height >= 50, "full-height toggle hover: " + op.id + "/" + field.name)) return;
+                    }
                     if (step % widget.backend.catalog.length === 0) {
                         const variant = Math.floor(step / widget.backend.catalog.length);
                         widget.window.surfaceItem.grabToImage(function(result) { result.saveToFile(ARTIFACTS + "/window-" + variant + ".png"); });
@@ -267,22 +293,80 @@ ShellRoot {
             } finally { checking = false; }
         }
     }
-}'''
-        (target / "shell.qml").write_text(shell.replace("SAMPLES", json.dumps(samples)).replace("ARTIFACTS", json.dumps(str(artifacts))))
+}"""
+        (target / "shell.qml").write_text(
+            shell.replace("SAMPLES", json.dumps(samples)).replace(
+                "ARTIFACTS", json.dumps(str(artifacts))
+            )
+        )
         runtime = target / "runtime"
         runtime.mkdir(mode=0o700)
         original_runtime = os.environ.get("XDG_RUNTIME_DIR", "/run/user/1000")
-        sockets = [path for path in Path(original_runtime).glob("wayland-*") if path.is_socket()]
-        display = os.environ.get("WAYLAND_DISPLAY") or (str(sockets[0]) if sockets else "wayland-0")
-        display = display if display.startswith("/") else str(Path(original_runtime) / display)
-        env = {**os.environ, "QT_QPA_PLATFORM": "wayland", "WAYLAND_DISPLAY": display, "XDG_RUNTIME_DIR": str(runtime), "HOME": str(target), "XDG_CONFIG_HOME": str(target / "config"), "XDG_CACHE_HOME": str(target / "cache"), "XDG_DATA_HOME": str(target / "data"), "QT_QUICK_BACKEND": "software", "DANK_MULLVAD_MOCK": "1", "QML_XHR_ALLOW_FILE_READ": "1", "QT_LOGGING_RULES": "qml.debug=true"}  # SMOKE markers are console.log output.
-        result = subprocess.run(["quickshell", "--path", str(target / "shell.qml"), "--no-color"], env=env, capture_output=True, text=True, timeout=55)
+        sockets = [
+            path
+            for path in Path(original_runtime).glob("wayland-*")
+            if path.is_socket()
+        ]
+        display = os.environ.get("WAYLAND_DISPLAY") or (
+            str(sockets[0]) if sockets else "wayland-0"
+        )
+        display = (
+            display
+            if display.startswith("/")
+            else str(Path(original_runtime) / display)
+        )
+        env = {
+            **os.environ,
+            "QT_QPA_PLATFORM": "wayland",
+            "WAYLAND_DISPLAY": display,
+            "XDG_RUNTIME_DIR": str(runtime),
+            "HOME": str(target),
+            "XDG_CONFIG_HOME": str(target / "config"),
+            "XDG_CACHE_HOME": str(target / "cache"),
+            "XDG_DATA_HOME": str(target / "data"),
+            "QT_QUICK_BACKEND": "software",
+            "DANK_MULLVAD_MOCK": "1",
+            "QML_XHR_ALLOW_FILE_READ": "1",
+            "QT_LOGGING_RULES": "qml.debug=true",
+        }  # SMOKE markers are console.log output.
+        result = subprocess.run(
+            ["quickshell", "--path", str(target / "shell.qml"), "--no-color"],
+            env=env,
+            capture_output=True,
+            text=True,
+            timeout=55,
+        )
         output = result.stdout + result.stderr
         print(output)
-        errors = ("TypeError:", "ReferenceError:", "is not a type", "Cannot assign", "Unable to assign", "Cannot load", "Error:", "Binding loop", "SMOKE TIMEOUT", "SMOKE confirmation", "SMOKE form mismatch", "SMOKE validation", "SMOKE credentials retained", "SMOKE operation failed", "SMOKE navigation")
-        if result.returncode or "SMOKE PASS" not in output or "SMOKE NAVIGATION PASS" not in output or any(error in output for error in errors):
+        errors = (
+            "TypeError:",
+            "ReferenceError:",
+            "is not a type",
+            "Cannot assign",
+            "Unable to assign",
+            "Cannot load",
+            "Error:",
+            "Binding loop",
+            "SMOKE TIMEOUT",
+            "SMOKE confirmation",
+            "SMOKE form mismatch",
+            "SMOKE validation",
+            "SMOKE credentials retained",
+            "SMOKE operation failed",
+            "SMOKE navigation",
+        )
+        if (
+            result.returncode
+            or "SMOKE PASS" not in output
+            or "SMOKE NAVIGATION PASS" not in output
+            or any(error in output for error in errors)
+        ):
             raise SystemExit(1)
-        print("QML runtime passed with real DMS imports:", dms, (dms / "VERSION").read_text().strip())
+        print(
+            "QML runtime passed with real DMS imports:",
+            dms,
+            (dms / "VERSION").read_text().strip(),
+        )
 
 
 if __name__ == "__main__":

@@ -1,8 +1,10 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Effects
 import QtQuick.Layouts
 import QtQuick.Window
 import Quickshell
+import Quickshell.Io
 import qs.Common
 import qs.Widgets
 
@@ -11,6 +13,9 @@ FloatingWindow {
     required property var engine
     required property var translations
     property var widgetRoot: null
+    property string pluginVersion: ""
+    readonly property string repositoryUrl: "https://github.com/bernardopg/dms-mullvad-vpn-plugin"
+    readonly property string registryUrl: "https://github.com/AvengeMedia/dms-plugin-registry/issues/1011"
     property string section: "connection"
     property int operationIndex: 0
     property bool preferences: false
@@ -38,14 +43,19 @@ FloatingWindow {
     readonly property string outputText: {
         const show = entry => entry ? (entry.ok ? (entry.data.text || JSON.stringify(entry.data, null, 2)) : translations.tr("error." + entry.error.code) + (entry.error.detail ? "\n" + entry.error.detail : "")) : translations.tr("loading");
         switch (outputTab) {
-        case "current": return show(currentRead);
-        case "settings": {
-            const settings = engine.snapshot["exported-settings"];
-            return settings && settings.ok ? JSON.stringify(settings.data, null, 2) : show(settings);
-        }
-        case "help": return operation ? operation.help : "";
-        case "logs": return engine.logs.join("\n");
-        default: return engine.result ? show(engine.result) : "";
+        case "current":
+            return show(currentRead);
+        case "settings":
+            {
+                const settings = engine.snapshot["exported-settings"];
+                return settings && settings.ok ? JSON.stringify(settings.data, null, 2) : show(settings);
+            }
+        case "help":
+            return operation ? operation.help : "";
+        case "logs":
+            return engine.logs.join("\n");
+        default:
+            return engine.result ? show(engine.result) : "";
         }
     }
     visible: false
@@ -58,7 +68,8 @@ FloatingWindow {
 
     onSectionChanged: operationIndex = 0
     onQueryChanged: operationIndex = 0
-    onOutputTabsChanged: if (!outputTabs.includes(outputTab)) outputTab = "result"
+    onOutputTabsChanged: if (!outputTabs.includes(outputTab))
+        outputTab = "result"
     onVisibleChanged: {
         if (!visible) {
             engine.pending = null;
@@ -73,12 +84,17 @@ FloatingWindow {
     function open() {
         visible = true;
         Qt.callLater(() => {
-            if (content.Window.window) content.Window.window.requestActivate();
-            if (engine.pending) confirmation.open();
-            else if (!preferences) search.forceActiveFocus();
+            if (content.Window.window)
+                content.Window.window.requestActivate();
+            if (engine.pending)
+                confirmation.open();
+            else if (!preferences)
+                search.forceActiveFocus();
         });
     }
-    function close() { visible = false; }
+    function close() {
+        visible = false;
+    }
     function toggleConnection() {
         if (engine.ready && !engine.busy && !changing)
             engine.prepare(connected ? "disconnect" : "connect", {});
@@ -93,12 +109,28 @@ FloatingWindow {
             operationIndex = (operationIndex + step + operations.length) % operations.length;
     }
 
+    FileView {
+        path: Qt.resolvedUrl("plugin.json")
+        onLoaded: {
+            try {
+                root.pluginVersion = String(JSON.parse(text()).version || "");
+            } catch (error) {
+                root.pluginVersion = "";
+            }
+        }
+    }
+
     Connections {
         target: root.engine
-        function onResultChanged() { if (root.engine.result) root.outputTab = "result"; }
+        function onResultChanged() {
+            if (root.engine.result)
+                root.outputTab = "result";
+        }
         function onPendingChanged() {
-            if (root.engine.pending && root.visible) confirmation.open();
-            else if (!root.engine.pending) confirmation.close();
+            if (root.engine.pending && root.visible)
+                confirmation.open();
+            else if (!root.engine.pending)
+                confirmation.close();
         }
     }
 
@@ -111,7 +143,7 @@ FloatingWindow {
         property bool child: false
         property bool dimmed: false
         property string chevron: ""
-        signal activated()
+        signal activated
         Layout.fillWidth: true
         implicitHeight: child ? 34 : 40
         radius: Theme.cornerRadius
@@ -158,7 +190,10 @@ FloatingWindow {
                 color: Theme.surfaceVariantText
             }
         }
-        StateLayer { stateColor: Theme.primary; onClicked: row.activated() }
+        StateLayer {
+            stateColor: Theme.primary
+            onClicked: row.activated()
+        }
     }
 
     component Panel: StyledRect {
@@ -172,7 +207,9 @@ FloatingWindow {
         id: content
         anchors.fill: parent
         property bool disablePopupTransparency: true
-        background: Rectangle { color: Theme.surface }
+        background: Rectangle {
+            color: Theme.surface
+        }
         font.pixelSize: Theme.fontSizeMedium
         palette.window: Theme.surface
         palette.windowText: Theme.surfaceText
@@ -183,12 +220,16 @@ FloatingWindow {
         palette.highlight: Theme.primary
         palette.highlightedText: Theme.primaryText
         Keys.onEscapePressed: {
-            if (root.engine.pending) root.engine.pending = null;
-            else if (root.preferences) root.preferences = false;
-            else root.close();
+            if (root.engine.pending)
+                root.engine.pending = null;
+            else if (root.preferences)
+                root.preferences = false;
+            else
+                root.close();
         }
         Keys.onPressed: event => {
-            if (root.engine.pending || !(event.modifiers & Qt.ControlModifier)) return;
+            if (root.engine.pending || !(event.modifiers & Qt.ControlModifier))
+                return;
             if (event.key === Qt.Key_F) {
                 root.preferences = false;
                 search.forceActiveFocus();
@@ -209,7 +250,10 @@ FloatingWindow {
             RowLayout {
                 Layout.fillWidth: true
                 spacing: Theme.spacingS
-                DankIcon { name: "vpn_lock"; size: 26; color: Theme.primary }
+                MullvadLogo {
+                    size: 28
+                    color: Theme.primary
+                }
                 StyledText {
                     text: "Mullvad VPN"
                     font.pixelSize: Theme.fontSizeLarge
@@ -217,12 +261,34 @@ FloatingWindow {
                     color: Theme.surfaceText
                 }
                 StyledRect {
+                    objectName: "pluginVersionBadge"
+                    visible: root.pluginVersion !== ""
+                    implicitWidth: versionLabel.implicitWidth + Theme.spacingS * 2
+                    implicitHeight: 22
+                    radius: height / 2
+                    color: Theme.primarySelected
+                    StyledText {
+                        id: versionLabel
+                        anchors.centerIn: parent
+                        text: "v" + root.pluginVersion
+                        color: Theme.primary
+                        font.pixelSize: Theme.fontSizeSmall
+                    }
+                }
+                StyledRect {
                     visible: root.engine.mock
                     implicitWidth: mockLabel.implicitWidth + Theme.spacingM
                     implicitHeight: 22
                     radius: height / 2
                     color: Theme.withAlpha(Theme.warning, 0.16)
-                    StyledText { id: mockLabel; anchors.centerIn: parent; text: root.translations.tr("badge.simulation"); color: Theme.warning; font.pixelSize: Theme.fontSizeSmall; font.weight: Font.Medium }
+                    StyledText {
+                        id: mockLabel
+                        anchors.centerIn: parent
+                        text: root.translations.tr("badge.simulation")
+                        color: Theme.warning
+                        font.pixelSize: Theme.fontSizeSmall
+                        font.weight: Font.Medium
+                    }
                 }
                 StyledText {
                     Layout.fillWidth: true
@@ -236,6 +302,33 @@ FloatingWindow {
                     visible: root.engine.busy
                     size: 20
                     Accessible.name: root.translations.tr("loading")
+                }
+                DankActionButton {
+                    objectName: "registryLink"
+                    iconName: "favorite"
+                    iconColor: Theme.error
+                    tooltipText: root.translations.tr("header.upvote")
+                    Accessible.name: tooltipText
+                    onClicked: Qt.openUrlExternally(root.registryUrl)
+                }
+                DankActionButton {
+                    objectName: "repositoryLink"
+                    Image {
+                        objectName: "repositoryIcon"
+                        anchors.centerIn: parent
+                        width: 18
+                        height: 18
+                        source: Qt.resolvedUrl("assets/github.svg")
+                        sourceSize: Qt.size(width, height)
+                        layer.enabled: true
+                        layer.effect: MultiEffect {
+                            colorization: 1
+                            colorizationColor: Theme.surfaceText
+                        }
+                    }
+                    tooltipText: root.translations.tr("header.repository")
+                    Accessible.name: tooltipText
+                    onClicked: Qt.openUrlExternally(root.repositoryUrl)
                 }
                 DankActionButton {
                     iconName: "refresh"
@@ -273,9 +366,16 @@ FloatingWindow {
                         implicitHeight: implicitWidth
                         radius: width / 2
                         color: Theme.withAlpha(root.statusColor, 0.16)
+                        MullvadLogo {
+                            anchors.centerIn: parent
+                            visible: root.vpnState !== "error" && !root.changing
+                            size: root.compact ? 24 : 28
+                            color: root.statusColor
+                        }
                         DankIcon {
                             anchors.centerIn: parent
-                            name: root.connected ? "vpn_lock" : root.vpnState === "error" ? "error" : root.changing ? "sync" : "vpn_lock_off"
+                            visible: root.vpnState === "error" || root.changing
+                            name: root.vpnState === "error" ? "error" : "sync"
                             size: root.compact ? 24 : 28
                             color: root.statusColor
                         }
@@ -309,7 +409,9 @@ FloatingWindow {
                         }
                         StyledText {
                             Layout.fillWidth: true
-                            text: root.translations.tr(root.engine.mock ? "mock.notice" : "status.notice", {version: root.engine.version || "—"})
+                            text: root.translations.tr(root.engine.mock ? "mock.notice" : "status.notice", {
+                                version: root.engine.version || "—"
+                            })
                             color: Theme.surfaceVariantText
                             font.pixelSize: Theme.fontSizeSmall
                             wrapMode: Text.Wrap
@@ -356,7 +458,10 @@ FloatingWindow {
                     RowLayout {
                         Layout.fillWidth: true
                         spacing: Theme.spacingM
-                        StyledText { text: root.translations.tr("language"); color: Theme.surfaceText }
+                        StyledText {
+                            text: root.translations.tr("language")
+                            color: Theme.surfaceText
+                        }
                         DankDropdown {
                             id: language
                             Layout.fillWidth: true
@@ -366,7 +471,8 @@ FloatingWindow {
                                 const code = ["auto", "en", "pt-BR"][options.indexOf(value)];
                                 if (root.widgetRoot && root.widgetRoot.pluginService)
                                     root.widgetRoot.pluginService.savePluginData("dankMullvadVpn", "language", code);
-                                else root.translations.language = code;
+                                else
+                                    root.translations.language = code;
                             }
                             Accessible.name: root.translations.tr("language")
                         }
@@ -401,15 +507,20 @@ FloatingWindow {
                     placeholderText: root.translations.tr("operation.search") + " (Ctrl+F)"
                     Accessible.name: root.translations.tr("operation.search")
                     Keys.onEscapePressed: event => {
-                        if (text) { text = ""; event.accepted = true; }
-                        else event.accepted = false;
+                        if (text) {
+                            text = "";
+                            event.accepted = true;
+                        } else
+                            event.accepted = false;
                     }
                     Keys.onUpPressed: root.moveSelection(-1)
                     Keys.onDownPressed: root.moveSelection(1)
                 }
                 StyledText {
                     visible: root.query !== ""
-                    text: root.translations.tr("search.results", {count: root.operations.length})
+                    text: root.translations.tr("search.results", {
+                        count: root.operations.length
+                    })
                     color: Theme.surfaceVariantText
                     font.pixelSize: Theme.fontSizeSmall
                 }
@@ -433,8 +544,27 @@ FloatingWindow {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
                             contentWidth: availableWidth
+                            rightPadding: 12
                             clip: true
+                            ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                            ScrollBar.vertical: ScrollBar {
+                                id: navigationScrollBar
+                                objectName: "navigationScrollBar"
+                                policy: ScrollBar.AsNeeded
+                                width: 6
+                                minimumSize: 0.08
+                                anchors.right: parent.right
+                                anchors.top: parent.top
+                                anchors.bottom: parent.bottom
+                                contentItem: Rectangle {
+                                    implicitWidth: 4
+                                    radius: width / 2
+                                    color: Theme.withAlpha(Theme.surfaceText, navigationScrollBar.pressed ? 0.45 : navigationScrollBar.hovered ? 0.3 : 0.14)
+                                }
+                                background: Item {}
+                            }
                             ColumnLayout {
+                                objectName: "navigationContent"
                                 width: navigation.availableWidth
                                 spacing: 2
                                 Repeater {
@@ -459,12 +589,16 @@ FloatingWindow {
                                             model: group.items
                                             NavRow {
                                                 required property var modelData
+                                                objectName: "operationRow_" + modelData.id
                                                 child: true
                                                 iconName: modelData.stream ? "sensors" : modelData.readonly ? "visibility" : "edit"
                                                 text: root.translations.tr(modelData.label)
-                                                selected: root.operation === modelData
+                                                selected: root.operation !== null && root.operation.id === modelData.id
                                                 dimmed: root.engine.supported[modelData.id] !== true
-                                                onActivated: { root.operationIndex = root.operations.indexOf(modelData); root.preferences = false; }
+                                                onActivated: {
+                                                    root.operationIndex = root.operations.findIndex(op => op.id === modelData.id);
+                                                    root.preferences = false;
+                                                }
                                             }
                                         }
                                     }
@@ -488,8 +622,18 @@ FloatingWindow {
                                 Row {
                                     required property var modelData
                                     spacing: Theme.spacingXS
-                                    DankIcon { name: parent.modelData[0]; size: 14; color: Theme.surfaceVariantText; anchors.verticalCenter: parent.verticalCenter }
-                                    StyledText { text: root.translations.tr(parent.modelData[1]); color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall; anchors.verticalCenter: parent.verticalCenter }
+                                    DankIcon {
+                                        name: parent.modelData[0]
+                                        size: 14
+                                        color: Theme.surfaceVariantText
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                    StyledText {
+                                        text: root.translations.tr(parent.modelData[1])
+                                        color: Theme.surfaceVariantText
+                                        font.pixelSize: Theme.fontSizeSmall
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
                                 }
                             }
                         }
@@ -575,14 +719,21 @@ FloatingWindow {
                                             checkEnabled: false
                                             model: root.outputTabs.map(tab => root.translations.tr("tab." + tab))
                                             currentIndex: root.outputTabs.indexOf(root.outputTab)
-                                            onSelectionChanged: (index, selected) => { if (selected) root.outputTab = root.outputTabs[index]; }
+                                            onSelectionChanged: (index, selected) => {
+                                                if (selected)
+                                                    root.outputTab = root.outputTabs[index];
+                                            }
                                             Accessible.name: root.translations.tr("output")
                                         }
                                         DankActionButton {
                                             iconName: "content_copy"
                                             enabled: output.text !== ""
                                             tooltipText: root.translations.tr("copy")
-                                            onClicked: { output.selectAll(); output.copy(); output.deselect(); }
+                                            onClicked: {
+                                                output.selectAll();
+                                                output.copy();
+                                                output.deselect();
+                                            }
                                             Accessible.name: root.translations.tr("copy")
                                         }
                                         DankActionButton {
@@ -669,12 +820,22 @@ FloatingWindow {
             focus: true
             closePolicy: Popup.CloseOnEscape
             padding: Theme.spacingL
-            background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.cornerRadius; border.color: confirmation.accent; border.width: 1 }
-            Overlay.modal: Rectangle { color: Qt.rgba(0, 0, 0, 0.45) }
-            onOpened: if (!confirmButton.activeFocus) cancelButton.forceActiveFocus()
+            background: Rectangle {
+                color: Theme.surfaceContainerHigh
+                radius: Theme.cornerRadius
+                border.color: confirmation.accent
+                border.width: 1
+            }
+            Overlay.modal: Rectangle {
+                color: Qt.rgba(0, 0, 0, 0.45)
+            }
+            onOpened: if (!confirmButton.activeFocus)
+                cancelButton.forceActiveFocus()
             onClosed: {
-                if (root.engine.pending) root.engine.pending = null;
-                if (root.visible) search.forceActiveFocus();
+                if (root.engine.pending)
+                    root.engine.pending = null;
+                if (root.visible)
+                    search.forceActiveFocus();
             }
             contentItem: ScrollView {
                 id: confirmationScroll
@@ -691,7 +852,12 @@ FloatingWindow {
                             implicitHeight: 44
                             radius: width / 2
                             color: Theme.withAlpha(confirmation.accent, 0.16)
-                            DankIcon { anchors.centerIn: parent; name: confirmation.destructive ? "warning" : "fact_check"; size: 24; color: confirmation.accent }
+                            DankIcon {
+                                anchors.centerIn: parent
+                                name: confirmation.destructive ? "warning" : "fact_check"
+                                size: 24
+                                color: confirmation.accent
+                            }
                         }
                         ColumnLayout {
                             Layout.fillWidth: true
@@ -754,30 +920,30 @@ FloatingWindow {
                     anchors.right: parent.right
                     anchors.rightMargin: Theme.spacingL
                     spacing: Theme.spacingS
-                MullvadButton {
-                    id: cancelButton
-                    objectName: "confirmationCancel"
-                    text: root.translations.tr("cancel")
-                    backgroundColor: Theme.surfaceContainerHighest
-                    textColor: Theme.surfaceText
-                    onClicked: root.engine.pending = null
-                    Accessible.name: text
-                    KeyNavigation.tab: confirmButton
-                    KeyNavigation.backtab: confirmButton
-                }
-                MullvadButton {
-                    id: confirmButton
-                    objectName: "confirmationExecute"
-                    text: root.translations.tr("confirm.execute")
-                    iconName: confirmation.destructive ? "warning" : "check"
-                    backgroundColor: confirmation.accent
-                    textColor: confirmation.destructive ? Theme.surface : Theme.primaryText
-                    enabled: !root.engine.busy
-                    onClicked: root.engine.confirm()
-                    Accessible.name: text
-                    KeyNavigation.tab: cancelButton
-                    KeyNavigation.backtab: cancelButton
-                }
+                    MullvadButton {
+                        id: cancelButton
+                        objectName: "confirmationCancel"
+                        text: root.translations.tr("cancel")
+                        backgroundColor: Theme.surfaceContainerHighest
+                        textColor: Theme.surfaceText
+                        onClicked: root.engine.pending = null
+                        Accessible.name: text
+                        KeyNavigation.tab: confirmButton
+                        KeyNavigation.backtab: confirmButton
+                    }
+                    MullvadButton {
+                        id: confirmButton
+                        objectName: "confirmationExecute"
+                        text: root.translations.tr("confirm.execute")
+                        iconName: confirmation.destructive ? "warning" : "check"
+                        backgroundColor: confirmation.accent
+                        textColor: confirmation.destructive ? Theme.surface : Theme.primaryText
+                        enabled: !root.engine.busy
+                        onClicked: root.engine.confirm()
+                        Accessible.name: text
+                        KeyNavigation.tab: cancelButton
+                        KeyNavigation.backtab: cancelButton
+                    }
                 }
             }
         }

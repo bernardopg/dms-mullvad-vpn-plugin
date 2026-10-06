@@ -18,9 +18,11 @@ PluginComponent {
     readonly property bool changing: ["connecting", "disconnecting"].includes(vpnState)
     readonly property color statusColor: vpnState === "error" ? Theme.error : vpnState === "connected" ? Theme.success : changing ? Theme.warning : Theme.surfaceVariantText
     readonly property string statusIcon: vpnState === "connected" ? "vpn_lock" : vpnState === "error" ? "error" : changing ? "sync" : "vpn_lock_off"
+    // The logo stands for steady states; error and in-progress keep their glyphs.
+    readonly property bool showLogo: vpnState !== "error" && !changing
     // DMS reloads the widget URL but caches child types. Version the adapter component
     // so this release can be applied without restarting the user's shell.
-    readonly property string engineVersion: "1.2.2"
+    readonly property string engineVersion: "1.3.0"
     readonly property var backend: Shared.engine(engineVersion, () => Qt.createComponent(Qt.resolvedUrl("MullvadEngine.qml").toString() + "?v=" + engineVersion, Component.PreferSynchronous).createObject(null))
     property alias window: fullWindow
     property alias i18n: translations
@@ -38,7 +40,10 @@ PluginComponent {
     Component.onCompleted: Shared.attach(engineVersion, root)
     Component.onDestruction: Shared.detach(engineVersion, root)
 
-    Translations { id: translations; language: root.pluginData.language || "auto" }
+    Translations {
+        id: translations
+        language: root.pluginData.language || "auto"
+    }
     Connections {
         target: root.backend
         // Only the bar the user last used (or the owner) opens its window for a confirmation.
@@ -47,7 +52,12 @@ PluginComponent {
                 root.openWindow();
         }
     }
-    MullvadWindow { id: fullWindow; engine: root.backend; translations: translations; widgetRoot: root }
+    MullvadWindow {
+        id: fullWindow
+        engine: root.backend
+        translations: translations
+        widgetRoot: root
+    }
 
     function quickToggle() {
         if (!root.backend.ready || root.backend.busy || ["connecting", "disconnecting"].includes(root.backend.status.state))
@@ -72,12 +82,48 @@ PluginComponent {
     horizontalBarPill: Component {
         Row {
             spacing: Theme.spacingS
-            DankIcon { name: root.statusIcon; color: root.statusColor; size: root.iconSize; anchors.verticalCenter: parent.verticalCenter }
-            StyledText { text: root.label; width: Math.min(implicitWidth, 230); elide: Text.ElideRight; color: Theme.surfaceText; anchors.verticalCenter: parent.verticalCenter; Accessible.name: text }
+            MullvadLogo {
+                visible: root.showLogo
+                color: root.statusColor
+                size: root.iconSize
+                anchors.verticalCenter: parent.verticalCenter
+            }
+            DankIcon {
+                visible: !root.showLogo
+                name: root.statusIcon
+                color: root.statusColor
+                size: root.iconSize
+                anchors.verticalCenter: parent.verticalCenter
+            }
+            StyledText {
+                text: root.label
+                width: Math.min(implicitWidth, 230)
+                elide: Text.ElideRight
+                color: Theme.surfaceText
+                anchors.verticalCenter: parent.verticalCenter
+                Accessible.name: text
+            }
         }
     }
     verticalBarPill: Component {
-        DankIcon { name: root.statusIcon; size: root.iconSize; color: root.statusColor; Accessible.name: root.label }
+        Item {
+            implicitWidth: root.iconSize
+            implicitHeight: root.iconSize
+            Accessible.name: root.label
+            MullvadLogo {
+                anchors.centerIn: parent
+                visible: root.showLogo
+                size: root.iconSize
+                color: root.statusColor
+            }
+            DankIcon {
+                anchors.centerIn: parent
+                visible: !root.showLogo
+                name: root.statusIcon
+                size: root.iconSize
+                color: root.statusColor
+            }
+        }
     }
     popoutContent: Component {
         PopoutComponent {
@@ -101,7 +147,19 @@ PluginComponent {
                             implicitHeight: 44
                             radius: width / 2
                             color: Theme.withAlpha(root.statusColor, 0.16)
-                            DankIcon { anchors.centerIn: parent; name: root.statusIcon; size: 24; color: root.statusColor }
+                            MullvadLogo {
+                                anchors.centerIn: parent
+                                visible: root.showLogo
+                                size: 26
+                                color: root.statusColor
+                            }
+                            DankIcon {
+                                anchors.centerIn: parent
+                                visible: !root.showLogo
+                                name: root.statusIcon
+                                size: 26
+                                color: root.statusColor
+                            }
                         }
                         ColumnLayout {
                             Layout.fillWidth: true
@@ -169,7 +227,9 @@ PluginComponent {
                 }
                 StyledText {
                     Layout.fillWidth: true
-                    text: translations.tr(root.backend.mock ? "mock.notice" : "status.notice", {version: root.backend.version || "—"})
+                    text: translations.tr(root.backend.mock ? "mock.notice" : "status.notice", {
+                        version: root.backend.version || "—"
+                    })
                     color: Theme.surfaceVariantText
                     font.pixelSize: Theme.fontSizeSmall
                     wrapMode: Text.Wrap
