@@ -29,7 +29,7 @@ def sample(field):
 
 class BackendTests(unittest.TestCase):
     def setUp(self):
-        self.adapter = backend.Adapter(binary=FAKE, timeout=2)
+        self.adapter = backend.Adapter(binary=FAKE, timeout=2, cache=None)
         self.addCleanup(self.adapter.close)
 
     def request(self, operation, params=None, confirmed=True):
@@ -146,6 +146,20 @@ class BackendTests(unittest.TestCase):
         self.assertTrue(result["data"]["supported"]["relay.set.custom"])
         self.adapter.supported["connect"] = False
         self.assertEqual(self.request("connect")["error"]["code"], "unsupported")
+
+    def test_probe_cache_and_partial_snapshot(self):
+        with tempfile.TemporaryDirectory() as directory:
+            cache = Path(directory) / "probe.json"
+            first = backend.Adapter(binary=FAKE, timeout=2, cache=cache)
+            supported = first.handle({"id": 1, "op": "init"})["data"]["supported"]
+            self.assertTrue(cache.exists())
+            second = backend.Adapter(binary=FAKE, timeout=2, cache=cache)
+            with patch.object(second, "run", wraps=second.run) as run:
+                self.assertEqual(second.handle({"id": 1, "op": "init"})["data"]["supported"], supported)
+            self.assertEqual(run.call_count, 1)  # --version only, no --help probes
+        result = self.request("snapshot", {"only": ["dns.get"]})
+        self.assertEqual(set(result["data"]), {"dns.get", "status", "exported-settings"})
+        self.assertEqual(self.request("snapshot", {"only": ["account.login"]})["error"]["code"], "validation")
 
     def test_failure_timeout_missing_binary(self):
         # Generous limit for failure: a loaded machine must not turn it into a timeout.

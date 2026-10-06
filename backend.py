@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Mullvad 2026.5 JSONL adapter. Python stdlib only, no shell or disk secrets."""
 import base64
+import hashlib
 import ipaddress
 import json
 import os
@@ -19,6 +20,9 @@ ROOT = Path(__file__).resolve().parent
 CATALOG = json.loads((ROOT / "operations.json").read_text())
 OPERATIONS = {op["id"]: op for op in CATALOG}
 LIMIT = 1024 * 1024
+# Snapshot reads: getters that need no input. Status and exported settings are always included.
+READS = [op["id"] for op in CATALOG if op["readonly"] and not op["stream"] and not any(f["required"] for f in op["fields"]) and op["id"] not in ("cli.version", "status")]
+CACHE = Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache") / "dank-mullvad-vpn" / "probe.json"
 ENV = {**os.environ, "LC_ALL": "C", "LANG": "C", "NO_COLOR": "1"}
 
 
@@ -286,11 +290,12 @@ def status_event(data):
 
 
 class Adapter:
-    def __init__(self, emit=lambda message: None, binary=None, timeout=20, mock=False):
+    def __init__(self, emit=lambda message: None, binary=None, timeout=20, mock=False, cache=CACHE):
         self.emit = emit
         self.binary = binary or shutil.which("mullvad")
         self.timeout = timeout
         self.mock = mock
+        self.cache = cache
         self.lock = threading.RLock()
         self.process_lock = threading.Lock()
         self.processes = set()
@@ -330,6 +335,17 @@ class Adapter:
 
     def initialize(self):
         self.version = parse_output("cli.version", self.run(["--version"]))["version"]
+        # One --help per form is ~88 processes; reuse the probe while CLI and catalog are unchanged.
+        key = hashlib.sha256(json.dumps([self.binary, self.version, CATALOG], sort_keys=True).encode()).hexdigest()
+        try:
+            cached = json.loads(self.cache.read_text()) if self.cache else {}
+        except (OSError, ValueError):
+            cached = {}
+        if cached.get("key") == key and isinstance(cached.get("supported"), dict) and set(cached["supported"]) == set(OPERATIONS):
+            self.supported = {k: v is True for k, v in cached["supported"].items()}
+            self.supported["split.launch"] = bool(shutil.which("mullvad-exclude"))
+            return {"version": self.version, "supported": self.supported, "catalog": CATALOG}
+        probe_failed = False
         for op in CATALOG:
             if op["id"] == "split.launch":
                 self.supported[op["id"]] = bool(shutil.which("mullvad-exclude"))
@@ -337,8 +353,19 @@ class Adapter:
             try:
                 help_text = self.run([*op["argv"], "--help"])
                 self.supported[op["id"]] = all(not f.get("flag") or f["flag"] in help_text for f in op["fields"])
-            except AdapterError:
+            except AdapterError as error:
                 self.supported[op["id"]] = False
+                # A missing subcommand is a stable answer; timeouts and launch errors are not.
+                probe_failed = probe_failed or error.code != "command"
+        if self.cache and not probe_failed:
+            try:
+                self.cache.parent.mkdir(parents=True, exist_ok=True)
+                descriptor, temporary = tempfile.mkstemp(dir=self.cache.parent)
+                with os.fdopen(descriptor, "w") as output:
+                    json.dump({"key": key, "supported": self.supported}, output)
+                os.replace(temporary, self.cache)
+            except OSError:
+                pass  # The cache is an optimization; probing again next start is correct.
         return {"version": self.version, "supported": self.supported, "catalog": CATALOG}
 
     def stop_stream(self, operation):
@@ -417,17 +444,19 @@ class Adapter:
                 if operation == "init":
                     data = self.initialize()
                 elif operation == "snapshot":
+                    only = request.get("params", {}).get("only", READS)
+                    if not isinstance(only, list) or set(only) - set(READS):
+                        raise AdapterError("validation", "Unknown snapshot read")
                     data = {}
                     try:
                         data["exported-settings"] = {"ok": True, "data": parse_output("exported-settings", self.run(["export-settings", "-"]))}
                     except AdapterError as error:
                         data["exported-settings"] = {"ok": False, "error": {"code":error.code, "detail":str(error)}}
-                    for op in CATALOG:
-                        if op["readonly"] and not any(f["required"] for f in op["fields"]) and not op["stream"] and op["id"] not in ("cli.version", "status"):
-                            try:
-                                data[op["id"]] = {"ok": True, "data": parse_output(op["id"], self.run(arguments(op, {})))}
-                            except AdapterError as error:
-                                data[op["id"]] = {"ok": False, "error": {"code": error.code, "detail": str(error)}}
+                    for name in only:
+                        try:
+                            data[name] = {"ok": True, "data": parse_output(name, self.run(arguments(OPERATIONS[name], {})))}
+                        except AdapterError as error:
+                            data[name] = {"ok": False, "error": {"code": error.code, "detail": str(error)}}
                     try:
                         data["status"] = {"ok": True, "data": parse_output("status", self.run(["status", "--json"]))}
                     except AdapterError as error:
