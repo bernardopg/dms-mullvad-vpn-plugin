@@ -125,6 +125,7 @@ ShellRoot {
                         break;
                     case 2:
                         if (!expect(widget.window.operations.length > 0 && widget.window.operations.every(op => op.id.includes("daita")), "global search")) return;
+                        if (!expect(widget.window.operationForm.command === "mullvad tunnel set daita on", "preview shows required enum default")) return;
                         widget.window.searchField.text = "no-such-function-xyz";
                         break;
                     case 3:
@@ -265,7 +266,7 @@ ShellRoot {
         sockets = [path for path in Path(original_runtime).glob("wayland-*") if path.is_socket()]
         display = os.environ.get("WAYLAND_DISPLAY") or (str(sockets[0]) if sockets else "wayland-0")
         display = display if display.startswith("/") else str(Path(original_runtime) / display)
-        env = {**os.environ, "QT_QPA_PLATFORM": "wayland", "WAYLAND_DISPLAY": display, "XDG_RUNTIME_DIR": str(runtime), "HOME": str(target), "XDG_CONFIG_HOME": str(target / "config"), "XDG_CACHE_HOME": str(target / "cache"), "XDG_DATA_HOME": str(target / "data"), "QT_QUICK_BACKEND": "software", "DANK_MULLVAD_MOCK": "1", "QML_XHR_ALLOW_FILE_READ": "1"}
+        env = {**os.environ, "QT_QPA_PLATFORM": "wayland", "WAYLAND_DISPLAY": display, "XDG_RUNTIME_DIR": str(runtime), "HOME": str(target), "XDG_CONFIG_HOME": str(target / "config"), "XDG_CACHE_HOME": str(target / "cache"), "XDG_DATA_HOME": str(target / "data"), "QT_QUICK_BACKEND": "software", "DANK_MULLVAD_MOCK": "1", "QML_XHR_ALLOW_FILE_READ": "1", "QT_LOGGING_RULES": "qml.debug=true"}  # SMOKE markers are console.log output.
         result = subprocess.run(["quickshell", "--path", str(target / "shell.qml"), "--no-color"], env=env, capture_output=True, text=True, timeout=55)
         output = result.stdout + result.stderr
         print(output)
