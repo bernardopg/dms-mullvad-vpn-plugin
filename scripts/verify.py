@@ -53,7 +53,7 @@ def verify():
     guidelines = (ROOT / "AGENTS.md").read_text()
     assert guidelines.startswith("# Repository Guidelines")
     assert 200 <= len(guidelines.split()) <= 400
-    widget = (ROOT / "MullvadWidget.qml").read_text()
+    widget = (ROOT / "MullvadEngine.qml").read_text()
     for command in ("toggle", "open", "settings"):
         assert "function " + command + "(): void" in widget
     print(f"Contracts passed: {len(catalog)} forms, all 2026.5 commands/options, {len(en)} translation keys")

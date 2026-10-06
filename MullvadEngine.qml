@@ -18,6 +18,21 @@ Item {
     property var logs: []
     property bool logging: false
     property bool watching: false
+    // Shared by every bar instance: the owner registers IPC, the active one shows confirmations.
+    property var owner: null
+    property var activeWidget: null
+    property var users: []
+    property var staleReads: []
+    // Reads refreshed by each daemon event kind; settings covers everything the daemon stores.
+    readonly property var eventReads: ({
+        settings: ["auto-connect.get", "beta-program.get", "lockdown-mode.get", "dns.get", "lan.get", "relay.get", "api-access.get", "api-access.list", "anti-censorship.get", "split-tunnel.list", "tunnel.get", "custom-list.list", "relay.override.get"],
+        relays: ["relay.list"],
+        device: ["account.get", "account.list-devices"],
+        "removed-device": ["account.list-devices"],
+        "access-method": ["api-access.get", "api-access.list"],
+        version: ["version"],
+        leak: []
+    })
     readonly property bool busy: Object.keys(requests).length > 0
     signal confirmationRequired()
     signal completed(string operation, bool success)
@@ -88,9 +103,18 @@ Item {
         return words.join(" ");
     }
 
+    // Collects reads to refresh; the debounce merges bursts of events into one snapshot.
+    function invalidate(reads) {
+        staleReads = staleReads.concat(reads.filter(read => !staleReads.includes(read)));
+        stateDebounce.restart();
+    }
+
     function refresh() {
-        if (ready && !busy)
-            request("snapshot");
+        if (!ready || busy)
+            return;
+        const only = staleReads;
+        staleReads = [];
+        request("snapshot", {only: only});
     }
 
     function retry() {
@@ -110,7 +134,7 @@ Item {
     function receive(message) {
         if (message.event) {
             if (message.event === "daemon.changed") {
-                stateDebounce.restart();
+                invalidate(eventReads[(message.data || {}).kind] || eventReads.settings);
             } else if (message.event === "status.listen") {
                 watching = message.ok;
                 updateStatus(message);
@@ -138,7 +162,7 @@ Item {
             request("snapshot");
             request("status.listen");
         } else if (message.op === "snapshot" && message.ok) {
-            snapshot = message.data;
+            snapshot = Object.assign({}, snapshot, message.data);
             if (snapshot.status && snapshot.status.ok)
                 status = snapshot.status.data;
             else if (snapshot.status) {
@@ -157,8 +181,9 @@ Item {
             if (message.op === "status" && !message.ok)
                 updateStatus(message);
             const spec = catalog.find(op => op.id === message.op);
+            // Maintenance actions (import, resets) can change any setting.
             if (spec && spec.confirm)
-                request("snapshot");
+                invalidate(spec.section === "maintenance" ? Object.values(eventReads).flat() : [spec.state].filter(read => read !== "status"));
             if (message.ok && spec && spec.readonly && !spec.stream) {
                 const updated = Object.assign({}, snapshot);
                 updated[message.op] = message;
@@ -204,12 +229,24 @@ Item {
         repeat: true
         running: root.ready
         onTriggered: {
-            if (!root.busy) {
+            // The listen stream already pushes every state change; poll only to recover it.
+            if (!root.busy && !root.watching) {
                 root.request("status", {}, false, true);
-                if (!root.watching)
-                    root.request("status.listen");
+                root.request("status.listen");
             }
         }
+    }
+    // Bar instance that should react: the one used last, else the first registered.
+    function target() {
+        return activeWidget || owner;
+    }
+
+    // One handler per engine, so several bars never register duplicate IPC targets.
+    IpcHandler {
+        target: "dankMullvadVpn"
+        function toggle(): void { const widget = root.target(); if (widget) widget.quickToggle(); }
+        function open(): void { const widget = root.target(); if (widget) widget.openWindow(); }
+        function settings(): void { const widget = root.target(); if (widget) widget.openPreferences(); }
     }
     Component.onDestruction: {
         pending = null;

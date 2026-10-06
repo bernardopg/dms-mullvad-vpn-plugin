@@ -3,7 +3,9 @@
 ## Fluxo
 
 `MullvadWidget.qml` estende `PluginComponent`, cria os componentes da barra e do
-popout e mantém um `MullvadEngine.qml` por instância do widget. A janela
+popout e compartilha um único `MullvadEngine.qml` entre todas as instâncias da
+barra (várias telas ou barras), por meio do registro `Shared.js`. O engine
+registra o único `IpcHandler` e mostra a confirmação na barra usada por último. A janela
 `MullvadWindow.qml` usa componentes DMS e controles Qt com cores de `Theme`.
 `OperationForm.qml` constrói um formulário tipado para a operação selecionada
 em `operations.json`. O arquivo `MullvadSettings.qml` salva somente preferências
@@ -18,16 +20,21 @@ mantendo o texto legível quando o idioma muda. Formulários usam `DankDropdown`
 `DankToggle` e `DankTextField`; a saída técnica fica em abas (`DankButtonGroup`) com texto monoespaçado.
 O popout usa altura calculada pelo conteúdo e fecha antes de ativar a janela.
 O engine é criado com uma URL versionada: a recarga de plugins do DMS 1.6.2
-mantém tipos QML filhos em cache. Isso permite aplicar a versão 1.2.1 por IPC,
+mantém tipos QML filhos em cache. Isso permite aplicar a versão 1.2.2 por IPC,
 sem reiniciar a shell. Atualize essa URL quando publicar outra revisão do engine.
 Consultas periódicas de status atualizam o resumo e as configurações atuais,
 preservando o resultado da última ação do usuário. Falhas continuam visíveis.
 
 O engine mantém um processo Python, envia JSONL por stdin e recebe respostas e
 eventos por stdout. `backend.py` resolve `mullvad` no PATH, força saída inglesa
-com `LC_ALL=C`, verifica a versão e a ajuda de cada operação, valida parâmetros
+com `LC_ALL=C`, verifica a versão e a ajuda de cada operação (resultado em cache
+em `~/.cache/dank-mullvad-vpn/probe.json`, invalidado quando o binário, a versão
+do CLI ou o catálogo mudam), valida parâmetros
 e executa uma lista de argumentos diretamente. Nenhum comando passa por shell.
 O catálogo é fechado: não há operação para executar texto livre no CLI.
+Eventos do daemon e ações confirmadas atualizam apenas as leituras afetadas,
+agrupadas por um debounce de 500 ms. A consulta de 30 s só roda quando o fluxo
+`status --json listen` está parado.
 
 ```mermaid
 flowchart LR
