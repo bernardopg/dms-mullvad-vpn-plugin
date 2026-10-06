@@ -171,7 +171,7 @@ class BackendTests(unittest.TestCase):
         snapshot = self.request("snapshot")
         self.assertTrue(snapshot["ok"])
         self.assertTrue(snapshot["data"]["status"]["ok"])
-        self.assertEqual(snapshot["data"]["split-tunnel.list"]["data"]["pids"], [728])
+        self.assertEqual(snapshot["data"]["split-tunnel.list"]["data"]["pids"], [4242])
 
     def test_serializes_concurrent_mutations(self):
         active = 0

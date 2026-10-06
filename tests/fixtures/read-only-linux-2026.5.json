@@ -56,12 +56,12 @@
   },
   "split-tunnel list": {
     "code": 0,
-    "stdout": "Excluded PIDs:\n728\n",
+    "stdout": "Excluded PIDs:\n4242\n",
     "stderr": ""
   },
   "tunnel get": {
     "code": 0,
-    "stdout": "WireGuard options\n    MTU:                    unset\n    Quantum resistance:     on\n    DAITA:                  false\n    Public key: [REDACTED]\n                            Created 2026-09-29 20:47:28 -03:00\n    Rotation interval:      unset\n    Allowed IPs:            0.0.0.0/0, ::/0\nGeneric options\n    IPv6:                   off\n",
+    "stdout": "WireGuard options\n    MTU:                    unset\n    Quantum resistance:     on\n    DAITA:                  false\n    Public key: [REDACTED]\n                            Created 2026-01-01 00:00:00 +00:00\n    Rotation interval:      unset\n    Allowed IPs:            0.0.0.0/0, ::/0\nGeneric options\n    IPv6:                   off\n",
     "stderr": ""
   },
   "custom-list list": {
@@ -71,12 +71,12 @@
   },
   "account get": {
     "code": 0,
-    "stdout": "Mullvad account:    [ACCOUNT]\nExpires at:         2026-12-25 20:28:12 -03:00\nDevice name:        Cosmic Tuna\n",
+    "stdout": "Mullvad account:    [ACCOUNT]\nExpires at:         2027-01-01 00:00:00 +00:00\nDevice name:        Demo Lynx\n",
     "stderr": ""
   },
   "account list-devices": {
     "code": 0,
-    "stdout": "Devices on the account:\nWarm Ferret\nJoyful Tuna\nCosmic Tuna\nNoble Hermit\n",
+    "stdout": "Devices on the account:\nDemo Otter\nDemo Heron\nDemo Lynx\nDemo Falcon\n",
     "stderr": ""
   },
   "version": {
