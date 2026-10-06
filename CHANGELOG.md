@@ -4,6 +4,18 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [1.2.1] - 2026-10-06
+
+### Fixed
+
+- The command preview now shows the default value of required choice fields,
+  such as `mullvad tunnel set daita on`.
+
+### Changed
+
+- Test fixtures no longer contain data from a real machine.
+- New promo banner and live screenshot in the README.
+
 ## [1.2.0] - 2026-10-05
 
 First public release.
@@ -32,8 +44,8 @@ First public release.
 
 ### Fixed
 
-- The command preview now shows the default value of required choice fields.
 - The confirmation dialog no longer loses its binding after `Esc`, so later
   confirmations always open.
 
+[1.2.1]: https://github.com/bernardopg/dms-mullvad-vpn-plugin/releases/tag/v1.2.1
 [1.2.0]: https://github.com/bernardopg/dms-mullvad-vpn-plugin/releases/tag/v1.2.0

@@ -3,7 +3,7 @@
   "id": "dankMullvadVpn",
   "name": "Dank Mullvad VPN",
   "description": "Mullvad 2026.5 for Linux: connection, account, relays, tunnel, DNS and API access.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "bernardopg",
   "license": "MIT",
   "icon": "vpn_lock",
