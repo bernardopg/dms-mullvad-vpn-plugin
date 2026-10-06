@@ -19,7 +19,7 @@ PluginComponent {
     readonly property string statusIcon: vpnState === "connected" ? "vpn_lock" : vpnState === "error" ? "error" : changing ? "sync" : "vpn_lock_off"
     // DMS reloads the widget URL but caches child types. Version the adapter component
     // so this release can be applied without restarting the user's shell.
-    readonly property var backend: Qt.createComponent(Qt.resolvedUrl("MullvadEngine.qml").toString() + "?v=1.2.0", Component.PreferSynchronous).createObject(root)
+    readonly property var backend: Qt.createComponent(Qt.resolvedUrl("MullvadEngine.qml").toString() + "?v=1.2.1", Component.PreferSynchronous).createObject(root)
     property alias window: fullWindow
     property alias i18n: translations
     popoutWidth: 420
